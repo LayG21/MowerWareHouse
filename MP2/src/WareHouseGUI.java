@@ -127,7 +127,7 @@ public class WareHouseGUI {
 		JPanel info = new JPanel();											//Panel for page information
 		JPanel conPanel = new JPanel();										//Panel for saving confirmation
 		JPanel inputPanel = new JPanel();									//Panel for file input
-		
+		JLabel instructions = new JLabel();
 		saveFrame.add(mainPanel);
 		saveFrame.pack();
 		saveFrame.setVisible(true);
@@ -177,7 +177,7 @@ public class WareHouseGUI {
 		
 		labelPanel.add(intro);
 		labelPanel.add(instruction);
-		labelPanel.add(note1); 
+		labelPanel.add(note1);  
 		labelPanel.add(note2); 
 		labelPanel.setLayout(new BoxLayout(labelPanel,BoxLayout.PAGE_AXIS));
 
