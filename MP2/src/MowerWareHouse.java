@@ -8,11 +8,13 @@ public class MowerWareHouse {
 	
 	private String storeName;					//Name of the mower store
 	private ArrayList<Mower> mowers;		    // List of mowers in the warehouse
+	private String outString;
 	
 	// Constructor
 	public MowerWareHouse() {
 		storeName = "None";
 		mowers = new ArrayList<Mower>();
+		outString = "";
 	}
 	
 	//Setters and getters
@@ -32,6 +34,13 @@ public class MowerWareHouse {
 		return this.mowers;
 	}
 	
+	public String getOutString() {
+		return this.outString;
+	}
+	
+	public void setOutString(String outcome) {
+		this.outString = outcome;
+	}
 	
 	//Methods for ArrayList
 	
@@ -172,10 +181,12 @@ public class MowerWareHouse {
 						break;
 				}
 			}
+			setOutString("File Loaded!");
 		}
 		catch(Exception e) {
+			setOutString("File Not Opened");
 			System.err.println("Trouble reading file: " + e.getMessage());
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
@@ -183,11 +194,14 @@ public class MowerWareHouse {
 	public void saveMowerData(String outputFileName) {
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName))) {
 			writer.write(this.toString());
+			setOutString("File Successfully Saved!");
 			System.out.println("File saved successfully.");
+			
 		}
 		catch(Exception e) {
+			setOutString("File Not Saved");
 			System.err.println("Trouble saving file:" + e.getMessage());
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
