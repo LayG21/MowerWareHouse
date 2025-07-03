@@ -1,3 +1,4 @@
+// new updated code. do not include in count:
 public class CommercialMower extends LawnTractor{
 	private double operatingHours;
 	private boolean zeroTurnRadius;

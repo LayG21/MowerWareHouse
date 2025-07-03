@@ -12,7 +12,7 @@ public class MowerWareHouse {
 	
 	// Constructor
 	public MowerWareHouse() {
-		storeName = "None";
+		storeName = null;
 		mowers = new ArrayList<Mower>();
 		outString = "";
 	}
