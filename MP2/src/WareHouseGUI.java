@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -17,9 +18,10 @@ public class WareHouseGUI {
 
 	public MowerWareHouse wareHouse;
 	public JFrame addFrame;
+	public JFrame viewFrame;
 	public String storeName = null;
-	public JLabel greeting =  new JLabel("No Ware House Available");
-	public boolean updateSaved;
+	public JLabel greeting = new JLabel("No Ware House Available");
+	public boolean updateSaved = false;
 
 	public static void main(String[] args) {
 		WareHouseGUI wh = new WareHouseGUI();
@@ -44,6 +46,8 @@ public class WareHouseGUI {
 		return nameAvailable;
 	}
 
+	
+	// Starting page of program
 	public void createGUI() {
 
 		JFrame start = new JFrame("Mower Warehouse");
@@ -111,8 +115,6 @@ public class WareHouseGUI {
 			addFields.add(mainPanel);
 			addFields.pack();
 			addFields.setVisible(true);
-			
-
 
 			// action to save store name and update menu with store name
 			saveButton.addActionListener(new ActionListener() {
@@ -137,13 +139,11 @@ public class WareHouseGUI {
 			});
 
 		}
-		
+
 		// Greeting Label
 
-		
 		greeting.setFont(new Font("SansSerif", Font.BOLD, 20));
 		greeting.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 
 		// Instructions Label
 		JLabel instructions = new JLabel("Select An Operation:");
@@ -187,8 +187,10 @@ public class WareHouseGUI {
 		start.pack();
 		start.setVisible(true);
 	}
-
-	// Add mower to warehouse
+/*--------------------------------------------------------------------------------------------------------------------------------------------*/
+	//Add Mower Section
+	
+	// Add mower to warehouse action
 	public void addMowerAction() {
 		// TODO Auto-generated method stub
 		// may have to check if warehouse even has a name, so they will have to add
@@ -249,9 +251,8 @@ public class WareHouseGUI {
 		addFrame.setVisible(true);
 	}
 
-	// adding mower type pushreel to list of mowers in warehouse
+	// Adding mower type Push Reel to list of mowers in warehouse
 	public void pushReelMowerAction() {
-
 
 		JDialog addFields = new JDialog(addFrame, "Add Push Reel Mower");
 		addFields.setPreferredSize(new Dimension(790, 500));
@@ -412,64 +413,62 @@ public class WareHouseGUI {
 				}
 				if (input2.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input2.getText());
-				        pr.setYear(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for year");
-				        return;
-				    }
-					
+						int i = Integer.parseInt(input2.getText());
+						pr.setYear(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for year");
+						return;
+					}
+
 				}
 				if (input3.getText().isBlank() != true) {
 					pr.setSerialNumber(input3.getText());
 				}
 				if (input4.getText().isBlank() != true) {
 					try {
-				        double i = Double.parseDouble(input4.getText());
-				        pr.setCutWidth(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for cut width");
-				        return;
-				    }
+						double i = Double.parseDouble(input4.getText());
+						pr.setCutWidth(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for cut width");
+						return;
+					}
 
 				}
 				if (input5.getText().isBlank() != true) {
 					try {
-				        double i = Double.parseDouble(input5.getText());
-				        pr.setWheelDiameter(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for wheel diameter");
-				        return;
-				    }
+						double i = Double.parseDouble(input5.getText());
+						pr.setWheelDiameter(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for wheel diameter");
+						return;
+					}
 				}
 				if (input6.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input6.getText());
-				        pr.setNumWheels(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for number of wheels");
-				        return;
-				    }
+						int i = Integer.parseInt(input6.getText());
+						pr.setNumWheels(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for number of wheels");
+						return;
+					}
 				}
 				wareHouse.addMower(pr);
 				confirmation.setText("Mower Added!");
+				updateSaved = false;
 			}
 
 		});
 		mainPanel.add(infoPanel);
 		mainPanel.add(conPanel);
 		mainPanel.add(fieldPanel);
-		
 
 		addFields.add(mainPanel);
 		addFields.pack();
 		addFields.setVisible(true);
 	}
 
-
-
+	// Adding mower type Gas Powered to list of mowers in warehouse
 	public void gasPoweredMowerAction() {
-
 
 		JDialog addFields = new JDialog(addFrame, "Add Gas Powered Mower");
 		addFields.setPreferredSize(new Dimension(790, 550));
@@ -656,7 +655,7 @@ public class WareHouseGUI {
 
 		String[] options = { "Select", "True", "False" };
 
-		JComboBox input9 = new JComboBox(options);
+		JComboBox<?> input9 = new JComboBox<Object>(options);
 		input9.setSelectedIndex(0);
 		input9.setPreferredSize(new Dimension(200, 20));
 		input9.setMaximumSize(input9.getPreferredSize());
@@ -674,7 +673,7 @@ public class WareHouseGUI {
 		gbc.gridy = 9;
 		fieldPanel.add(addMower, gbc);
 
-		// action to save gaspowered mower
+		// Action to save Gas Powered mower
 		addMower.addActionListener(new ActionListener() {
 
 			@Override
@@ -686,54 +685,54 @@ public class WareHouseGUI {
 				}
 				if (input2.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input2.getText());
-				        gp.setYear(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for year");
-				        return;
-				    }
+						int i = Integer.parseInt(input2.getText());
+						gp.setYear(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for year");
+						return;
+					}
 				}
 				if (input3.getText().isBlank() != true) {
 					gp.setSerialNumber(input3.getText());
 				}
 				if (input4.getText().isBlank() != true) {
 					try {
-				        double i = Double.parseDouble(input4.getText());
-				        gp.setCutWidth(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for cut width");
-				        return;
-				    }
+						double i = Double.parseDouble(input4.getText());
+						gp.setCutWidth(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for cut width");
+						return;
+					}
 				}
 				if (input5.getText().isBlank() != true) {
 					try {
-				        double i = Double.parseDouble(input5.getText());
-				        gp.setWheelDiameter(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for wheel diameter");
-				        return;
-				    }
+						double i = Double.parseDouble(input5.getText());
+						gp.setWheelDiameter(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for wheel diameter");
+						return;
+					}
 				}
 				if (input6.getText().isBlank() != true) {
 					ge.setManufacturer(input6.getText());
 				}
 				if (input7.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input7.getText());
-				        ge.setHorsePower(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for horse power");
-				        return;
-				    }
+						int i = Integer.parseInt(input7.getText());
+						ge.setHorsePower(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for horse power");
+						return;
+					}
 				}
 				if (input8.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input8.getText());
-				        ge.setCylinders(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for cylinders");
-				        return;
-				    }
+						int i = Integer.parseInt(input8.getText());
+						ge.setCylinders(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for cylinders");
+						return;
+					}
 				}
 
 				String selectedItem = (String) input9.getSelectedItem();
@@ -746,6 +745,7 @@ public class WareHouseGUI {
 				gp.setEngine(ge);
 				wareHouse.addMower(gp);
 				confirmation.setText("Mower Added!");
+				updateSaved = false;
 			}
 
 		});
@@ -760,6 +760,8 @@ public class WareHouseGUI {
 
 	}
 
+	
+	// Adding mower type Commercial to list of mowers in warehouse
 	public void commercialMowerAction() {
 
 		JDialog addFields = new JDialog(addFrame, "Add Commercial Mower");
@@ -964,7 +966,7 @@ public class WareHouseGUI {
 
 		String[] options = { "Select", "True", "False" };
 
-		JComboBox input10 = new JComboBox(options);
+		JComboBox<?> input10 = new JComboBox<Object>(options);
 		input10.setSelectedIndex(0);
 		input10.setPreferredSize(new Dimension(200, 20));
 		input10.setMaximumSize(input10.getPreferredSize());
@@ -995,12 +997,12 @@ public class WareHouseGUI {
 				}
 				if (input2.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input2.getText());
-				        cw.setYear(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for year");
-				        return;
-				    }
+						int i = Integer.parseInt(input2.getText());
+						cw.setYear(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for year");
+						return;
+					}
 				}
 				if (input3.getText().isBlank() != true) {
 					cw.setSerialNumber(input3.getText());
@@ -1010,42 +1012,42 @@ public class WareHouseGUI {
 				}
 				if (input5.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input5.getText());
-				        ce.setHorsePower(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for horse power");
-				        return;
-				    }
+						int i = Integer.parseInt(input5.getText());
+						ce.setHorsePower(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for horse power");
+						return;
+					}
 				}
 				if (input6.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input6.getText());
-				        ce.setCylinders(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for cylinders");
-				        return;
-				    }
+						int i = Integer.parseInt(input6.getText());
+						ce.setCylinders(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for cylinders");
+						return;
+					}
 				}
 				if (input7.getText().isBlank() != true) {
 					cw.setModel(input7.getText());
 				}
 				if (input8.getText().isBlank() != true) {
 					try {
-				        double i = Double.parseDouble(input8.getText());
-				        cw.setDeckWidth(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for deck width");
-				        return;
-				    }
+						double i = Double.parseDouble(input8.getText());
+						cw.setDeckWidth(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for deck width");
+						return;
+					}
 				}
 				if (input9.getText().isBlank() != true) {
 					try {
-				        double i = Double.parseDouble(input9.getText());
-				        cw.setOperatingHours(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for operating hours");
-				        return;
-				    }
+						double i = Double.parseDouble(input9.getText());
+						cw.setOperatingHours(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for operating hours");
+						return;
+					}
 				}
 				String selectedItem = (String) input10.getSelectedItem();
 				if ("True".equals(selectedItem)) {
@@ -1057,6 +1059,7 @@ public class WareHouseGUI {
 				wareHouse.addMower(cw);
 
 				confirmation.setText("Mower Added!");
+				updateSaved = false;
 			}
 
 		});
@@ -1071,6 +1074,8 @@ public class WareHouseGUI {
 
 	}
 
+	
+	// Adding mower type Lawn Tractor to list of mowers in warehouse
 	public void lawnTractorMowerAction() {
 
 		JDialog addFields = new JDialog(addFrame, "Add Lawn Tractor Mower");
@@ -1268,12 +1273,12 @@ public class WareHouseGUI {
 				}
 				if (input2.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input2.getText());
-				        lt.setYear(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for year");
-				        return;
-				    }
+						int i = Integer.parseInt(input2.getText());
+						lt.setYear(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for year");
+						return;
+					}
 				}
 				if (input3.getText().isBlank() != true) {
 					lt.setSerialNumber(input3.getText());
@@ -1283,38 +1288,39 @@ public class WareHouseGUI {
 				}
 				if (input5.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input5.getText());
-				        le.setHorsePower(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for horse power");
-				        return;
-				    }
+						int i = Integer.parseInt(input5.getText());
+						le.setHorsePower(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for horse power");
+						return;
+					}
 				}
 				if (input6.getText().isBlank() != true) {
 					try {
-				        int i = Integer.parseInt(input6.getText());
-				        le.setCylinders(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for cylinders");
-				        return;
-				    }
+						int i = Integer.parseInt(input6.getText());
+						le.setCylinders(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for cylinders");
+						return;
+					}
 				}
 				if (input7.getText().isBlank() != true) {
 					lt.setModel(input7.getText());
 				}
 				if (input8.getText().isBlank() != true) {
 					try {
-				        double i = Double.parseDouble(input8.getText());
-				        lt.setDeckWidth(i);
-				    } catch (NumberFormatException nfe) {
-				        confirmation.setText("Please enter a valid number for deck width");
-				        return;
-				    }
+						double i = Double.parseDouble(input8.getText());
+						lt.setDeckWidth(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for deck width");
+						return;
+					}
 				}
 
 				lt.setEngine(le);
 				wareHouse.addMower(lt);
 				confirmation.setText("Mower Added!");
+				updateSaved = false;
 			}
 
 		});
@@ -1329,6 +1335,10 @@ public class WareHouseGUI {
 
 	}
 
+	/*-----------------------------------------------------------------------------------------------------------------------------------*/
+	//Save Mower Section
+	
+	
 	// Save warehouse data to a file
 	/*
 	 * Should provide dialog to allow user to provide an output file name and then
@@ -1393,8 +1403,9 @@ public class WareHouseGUI {
 				} else {
 					wareHouse.saveMowerData(input.getText());
 					confirmation.setText(wareHouse.getOutString());
+					updateSaved = true;
 				}
-
+				
 			}
 
 		});
@@ -1409,6 +1420,10 @@ public class WareHouseGUI {
 
 	}
 
+	/*-----------------------------------------------------------------------------------------------------------------------------------*/
+	//Load Mower Section
+	
+	
 	// Load mower data from file.
 	// type in input file exactly how it is named
 	// tell user if it exists or not
@@ -1481,6 +1496,7 @@ public class WareHouseGUI {
 						storeName = wareHouse.getStoreName();
 						greeting.setText("Welcome to " + storeName);
 						confirmation.setText(wareHouse.getOutString());
+						updateSaved = false;
 					}
 
 					catch (Exception ex) {
@@ -1508,6 +1524,9 @@ public class WareHouseGUI {
 
 	}
 
+	/*-----------------------------------------------------------------------------------------------------------------------------------*/
+	//View Mower Section
+	
 	// View mowers in the warehouse
 	public void viewWareHouseAction() {
 		// if the ware house is empty, state that it is empty
@@ -1515,17 +1534,262 @@ public class WareHouseGUI {
 		// do not allow to edit this text field
 		// allow to scroll
 
-		JFrame viewFrame = new JFrame("View WareHouse Data");
-		viewFrame.setPreferredSize(new Dimension(590, 400));
+		viewFrame = new JFrame("View WareHouse Data");
+		viewFrame.setPreferredSize(new Dimension(700, 440));
 		viewFrame.setResizable(false);
 
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+		mainPanel.setBorder(new EmptyBorder(150, 20, 20, 20));
+
+		// Panel for panel information
+		JPanel infoPanel = new JPanel();
+
+		// infoPanel components
+		JLabel greetings = new JLabel("Welcome to the View Page!");
+		greetings.setFont(new Font("SansSerif", Font.BOLD, 20));
+		greetings.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JLabel instructions = new JLabel("Please select the type of mower you would like to view:");
+		instructions.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		infoPanel.add(greetings);
+		infoPanel.add(instructions);
+
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
+
+		// Panel for displaying different mower buttons
+		JPanel mowersPanel = new JPanel();
+
+		JButton lawnTractorMower = new JButton("LawnTractor Mower");
+		JButton commercialMower = new JButton("Commercial Mower");
+		JButton gasPoweredMower = new JButton("GasPowered Mower");
+		JButton pushReelMower = new JButton("PushReel Mower");
+
+		// Add action listeners
+		lawnTractorMower.addActionListener(e -> viewLawnTractor());
+		commercialMower.addActionListener(e -> viewCommercialMower());
+		gasPoweredMower.addActionListener(e -> viewGasPoweredMower());
+		pushReelMower.addActionListener(e -> viewPushReelMower());
+
+		mowersPanel.add(lawnTractorMower);
+		mowersPanel.add(commercialMower);
+		mowersPanel.add(gasPoweredMower);
+		mowersPanel.add(pushReelMower);
+
+		mainPanel.add(infoPanel);
+		mainPanel.add(mowersPanel);
+
+		viewFrame.add(mainPanel);
 		viewFrame.pack();
 		viewFrame.setVisible(true);
 	}
 
-	// Exit out of application
+	// View properties of all Push Reel mowers
+	public void viewPushReelMower() {
+		JDialog pushWindow = new JDialog(viewFrame, "View Push Reel Mowers");
+		pushWindow.setPreferredSize(new Dimension(490, 300));
+		pushWindow.setResizable(false);
+
+		JPanel mainPanel = new JPanel();
+		mainPanel.setSize(new Dimension(400, 120));
+
+		DefaultListModel<String> prMowers = new DefaultListModel<String>();
+		
+		boolean found = false;
+
+
+
+		for (Mower m : wareHouse.getMowersList()) {
+			if (m instanceof PushReelMower) {
+				found = true;
+				
+				//split to string to print all properties stacked on top
+				String [] lines = m.toString().split("\n");
+				for(String line:lines) {
+					prMowers.addElement(line);
+				}	
+				prMowers.addElement("------------------------------------");
+			}
+		}
+
+		if (found == false) {
+			prMowers.addElement("No Push Reel Mowers in warehouse.");
+
+		}
+		JList<String> pList = new JList<String>(prMowers);
+		pList.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		JScrollPane scrollPane = new JScrollPane(pList);
+
+		mainPanel.add(scrollPane);
+
+		pushWindow.add(mainPanel);
+		pushWindow.pack();
+		pushWindow.setVisible(true);
+
+	}
+
+	// View properties of all Gas Powered mowers
+	public void viewGasPoweredMower() {
+		
+
+		JDialog gasWindow = new JDialog(viewFrame, "View Gas Powered Mowers");
+		gasWindow.setPreferredSize(new Dimension(490, 300));
+		gasWindow.setResizable(false);
+
+		boolean found = false;
+
+		JPanel mainPanel = new JPanel();
+		mainPanel.setSize(new Dimension(400, 120));
+
+		DefaultListModel<String> gpMowers = new DefaultListModel<String>();
+
+		for (Mower m : wareHouse.getMowersList()) {
+			if (m instanceof GasPoweredMower) {
+				found = true;
+				
+				//split to string to print all properties stacked on top
+				String [] lines = m.toString().split("\n");
+				for(String line:lines) {
+					gpMowers.addElement(line);
+				}	
+				gpMowers.addElement("------------------------------------");
+			}
+		}
+
+		if (found == false) {
+			gpMowers.addElement("No Gas Powered Mowers in warehouse.");
+
+		}
+		
+		
+		JList<String> gList = new JList<String>(gpMowers);
+		gList.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		JScrollPane scrollPane = new JScrollPane(gList);
+
+		mainPanel.add(scrollPane);
+
+		gasWindow.add(mainPanel);
+		gasWindow.pack();
+		gasWindow.setVisible(true);
+
+	}
+
+	// View properties of all Commercial Mowers
+	public void viewCommercialMower() {
+		
+
+		JDialog comWindow = new JDialog(viewFrame, "View Commercial Mowers");
+		comWindow.setPreferredSize(new Dimension(490, 300));
+		comWindow.setResizable(false);
+
+		boolean found = false;
+
+		JPanel mainPanel = new JPanel();
+		mainPanel.setSize(new Dimension(400, 120));
+
+		DefaultListModel<String> cmMowers = new DefaultListModel<String>();
+
+
+
+		for (Mower m : wareHouse.getMowersList()) {
+			if (m instanceof CommercialMower) {
+				found = true;
+				
+				//split to string to print all properties stacked on top
+				String [] lines = m.toString().split("\n");
+				for(String line:lines) {
+					cmMowers.addElement(line);
+				}	
+				cmMowers.addElement("------------------------------------");
+			}
+		}
+
+		if (found == false) {
+			cmMowers.addElement("No Commercial Mowers in warehouse.");
+
+		}
+		
+		
+		JList<String> cList = new JList<String>(cmMowers);
+		cList.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		JScrollPane scrollPane = new JScrollPane(cList);
+
+		mainPanel.add(scrollPane);
+
+		comWindow.add(mainPanel);
+		comWindow.pack();
+		comWindow.setVisible(true);
+
+	}
+
+	// View properties of all Lawn Tractor mowers
+	public void viewLawnTractor() {
+
+		JDialog lawnWindow = new JDialog(viewFrame, "View Lawn Tractor Mowers");
+		lawnWindow.setPreferredSize(new Dimension(490, 300));
+		lawnWindow.setResizable(false);
+
+		boolean found = false;
+
+		JPanel mainPanel = new JPanel();
+		mainPanel.setSize(new Dimension(400, 120));
+
+		DefaultListModel<String> ltMowers = new DefaultListModel<String>();
+
+
+		for (Mower m : wareHouse.getMowersList()) {
+			if ((m instanceof LawnTractor) && !(m instanceof CommercialMower)) {
+				found = true;
+				
+				//split to string to print all properties stacked on top
+				String [] lines = m.toString().split("\n");
+				for(String line:lines) {
+					ltMowers.addElement(line);
+				}	
+				ltMowers.addElement("------------------------------------");
+			}
+		}
+
+		if (found == false) {
+			ltMowers.addElement("No Lawn Tractor Mowers in warehouse.");
+
+		}
+		
+		
+		JList<String> lList = new JList<String>(ltMowers);
+		lList.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		JScrollPane scrollPane = new JScrollPane(lList);
+
+		mainPanel.add(scrollPane);
+
+		lawnWindow.add(mainPanel);
+		lawnWindow.pack();
+		lawnWindow.setVisible(true);
+	}
+
+	
+	/*-----------------------------------------------------------------------------------------------------------------------------------*/
+	//Exit Program Section
+	/*
+	 * TODO
+	 * Change to ask if the user would like to save the update or not
+	 * Cases:
+	 * 	- when you add a mower
+	 * 	- when you load in ware house data
+	 * 	- when you do not update anything and just want to exit
+	 * */
+	
+	// Exit out of application 
 	public void exitWareHouseAction() {
-		System.exit(0);
+		if(updateSaved == false) {
+			saveWareHouseAction();
+		}
+		else {
+			System.exit(0);
+		}
+
 	}
 
 }
