@@ -17,11 +17,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class WareHouseGUI {
 
 	public MowerWareHouse wareHouse;
+	public JFrame start;
 	public JFrame addFrame;
 	public JFrame viewFrame;
 	public String storeName = null;
 	public JLabel greeting = new JLabel("No Ware House Available");
-	public boolean updateSaved = false;
+	public boolean updateSaved = true;
 
 	public static void main(String[] args) {
 		WareHouseGUI wh = new WareHouseGUI();
@@ -46,12 +47,87 @@ public class WareHouseGUI {
 		return nameAvailable;
 	}
 
-	
+	public void changeWareHouseName() {
+		// Check if there is a warehouse name and tell user to enter one
+
+		JDialog addFields = new JDialog(start, "Add Mower Warehouse Name");
+		addFields.setPreferredSize(new Dimension(500, 400));
+		addFields.setResizable(false);
+
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+		mainPanel.setBorder(new EmptyBorder(120, 20, 20, 20));
+
+		JPanel infoPanel = new JPanel(); // Panel for page information
+		JPanel conPanel = new JPanel(); // Panel for saving confirmation
+		JPanel inputPanel = new JPanel(); // Panel for store name input
+
+		// infoPanel components
+		JLabel info = new JLabel("There is no name for your warehouse.");
+		info.setFont(new Font("SansSerif", Font.BOLD, 20));
+		info.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JLabel instructions = new JLabel("Please enter your warehouse name.");
+		instructions.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		infoPanel.add(info);
+		infoPanel.add(instructions);
+
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
+
+		// inputPanel components
+		JTextField input = new JTextField();
+		JButton saveButton = new JButton("Create Store");
+		input.setPreferredSize(new Dimension(200, 20));
+		input.setEditable(true);
+
+		inputPanel.add(input);
+		inputPanel.add(saveButton);
+
+		// conPanel components
+		JLabel confirmation = new JLabel("");
+		confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		conPanel.add(confirmation);
+		conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.PAGE_AXIS));
+
+		mainPanel.add(infoPanel);
+		mainPanel.add(conPanel);
+		mainPanel.add(inputPanel);
+
+		addFields.add(mainPanel);
+		addFields.pack();
+		addFields.setVisible(true);
+
+		// action to save store name and update menu with store name
+		saveButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (input.getText().isEmpty() || input.getText().isBlank()) {
+					confirmation.setText("Please type in a name.");
+				} else {
+					wareHouse.setStoreName(input.getText());
+					storeName = wareHouse.getStoreName();
+					confirmation.setText("Store Name Saved!");
+
+					greeting.setText("Welcome to " + storeName);
+
+					addFields.dispose();
+				}
+
+			}
+
+		});
+
+	}
 	// Starting page of program
 	public void createGUI() {
 
-		JFrame start = new JFrame("Mower Warehouse");
-		start.setPreferredSize(new Dimension(620, 500));
+		start = new JFrame("Mower Warehouse");
+		start.setPreferredSize(new Dimension(800, 500));
 		start.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		start.setResizable(false);
 
@@ -63,83 +139,13 @@ public class WareHouseGUI {
 		JPanel opening = new JPanel();
 		opening.setLayout(new BoxLayout(opening, BoxLayout.PAGE_AXIS));
 		opening.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		// Check if there is a warehouse name and tell user to enter one
+	
+		
 		if (checkWareHouse() == false) {
-			JDialog addFields = new JDialog(start, "Add Mower Warehouse Name");
-			addFields.setPreferredSize(new Dimension(500, 400));
-			addFields.setResizable(false);
-
-			JPanel mainPanel = new JPanel();
-			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-			mainPanel.setBorder(new EmptyBorder(120, 20, 20, 20));
-
-			JPanel infoPanel = new JPanel(); // Panel for page information
-			JPanel conPanel = new JPanel(); // Panel for saving confirmation
-			JPanel inputPanel = new JPanel(); // Panel for store name input
-
-			// infoPanel components
-			JLabel info = new JLabel("There is no name for your warehouse.");
-			info.setFont(new Font("SansSerif", Font.BOLD, 20));
-			info.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-			JLabel instructions = new JLabel("Please enter your warehouse name.");
-			instructions.setFont(new Font("SansSerif", Font.PLAIN, 13));
-			instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-			infoPanel.add(info);
-			infoPanel.add(instructions);
-
-			infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
-
-			// inputPanel components
-			JTextField input = new JTextField();
-			JButton saveButton = new JButton("Create Store");
-			input.setPreferredSize(new Dimension(200, 20));
-			input.setEditable(true);
-
-			inputPanel.add(input);
-			inputPanel.add(saveButton);
-
-			// conPanel components
-			JLabel confirmation = new JLabel("");
-			confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-			conPanel.add(confirmation);
-			conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.PAGE_AXIS));
-
-			mainPanel.add(infoPanel);
-			mainPanel.add(conPanel);
-			mainPanel.add(inputPanel);
-
-			addFields.add(mainPanel);
-			addFields.pack();
-			addFields.setVisible(true);
-
-			// action to save store name and update menu with store name
-			saveButton.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-
-					if (input.getText().isEmpty() || input.getText().isBlank()) {
-						confirmation.setText("Please type in a name.");
-					} else {
-						wareHouse.setStoreName(input.getText());
-						storeName = wareHouse.getStoreName();
-						confirmation.setText("Store Name Saved!");
-
-						greeting.setText("Welcome to " + storeName);
-
-						addFields.dispose();
-					}
-
-				}
-
-			});
-
+			changeWareHouseName();
 		}
 
+		
 		// Greeting Label
 
 		greeting.setFont(new Font("SansSerif", Font.BOLD, 20));
@@ -165,14 +171,16 @@ public class WareHouseGUI {
 		JButton saveFile = new JButton("Save File");
 		JButton loadFile = new JButton("Load File");
 		JButton addMower = new JButton("Add Mower");
-		JButton viewWareHouse = new JButton("View WareHouse");
+		JButton viewWareHouse = new JButton("View Warehouse");
 		JButton exit = new JButton("Exit");
+		JButton rename = new JButton("Rename Warehouse");
 
 		// Add action listeners
 		addMower.addActionListener(e -> addMowerAction());
 		saveFile.addActionListener(e -> saveWareHouseAction());
 		loadFile.addActionListener(e -> loadWareHouseAction());
 		viewWareHouse.addActionListener(e -> viewWareHouseAction());
+		rename.addActionListener(e->changeWareHouseName());
 		exit.addActionListener(e -> exitWareHouseAction());
 
 		// Add buttons to be displayed
@@ -180,16 +188,19 @@ public class WareHouseGUI {
 		options.add(viewWareHouse);
 		options.add(loadFile);
 		options.add(saveFile);
+		options.add(rename);
 		options.add(exit);
 
 		window.add(options);
 		start.add(window);
 		start.pack();
 		start.setVisible(true);
+
+		updateSaved = true;
 	}
-/*--------------------------------------------------------------------------------------------------------------------------------------------*/
-	//Add Mower Section
-	
+	/*--------------------------------------------------------------------------------------------------------------------------------------------*/
+	// Add Mower Section
+
 	// Add mower to warehouse action
 	public void addMowerAction() {
 		// TODO Auto-generated method stub
@@ -760,7 +771,6 @@ public class WareHouseGUI {
 
 	}
 
-	
 	// Adding mower type Commercial to list of mowers in warehouse
 	public void commercialMowerAction() {
 
@@ -987,11 +997,12 @@ public class WareHouseGUI {
 		// action to save commerical mower
 		addMower.addActionListener(new ActionListener() {
 
-			CommercialMower cw = new CommercialMower();
-			Engine ce = new Engine();
+
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				CommercialMower cw = new CommercialMower();
+				Engine ce = new Engine();
 				if (input1.getText().isBlank() != true) {
 					cw.setManufacturer(input1.getText());
 				}
@@ -1074,7 +1085,6 @@ public class WareHouseGUI {
 
 	}
 
-	
 	// Adding mower type Lawn Tractor to list of mowers in warehouse
 	public void lawnTractorMowerAction() {
 
@@ -1263,11 +1273,12 @@ public class WareHouseGUI {
 		// action to save lawn tractor mower
 		addMower.addActionListener(new ActionListener() {
 
-			LawnTractor lt = new LawnTractor();
-			Engine le = new Engine();
+
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				LawnTractor lt = new LawnTractor();
+				Engine le = new Engine();
 				if (input1.getText().isBlank() != true) {
 					lt.setManufacturer(input1.getText());
 				}
@@ -1336,9 +1347,8 @@ public class WareHouseGUI {
 	}
 
 	/*-----------------------------------------------------------------------------------------------------------------------------------*/
-	//Save Mower Section
-	
-	
+	// Save Mower Section
+
 	// Save warehouse data to a file
 	/*
 	 * Should provide dialog to allow user to provide an output file name and then
@@ -1405,7 +1415,7 @@ public class WareHouseGUI {
 					confirmation.setText(wareHouse.getOutString());
 					updateSaved = true;
 				}
-				
+
 			}
 
 		});
@@ -1421,9 +1431,8 @@ public class WareHouseGUI {
 	}
 
 	/*-----------------------------------------------------------------------------------------------------------------------------------*/
-	//Load Mower Section
-	
-	
+	// Load Mower Section
+
 	// Load mower data from file.
 	// type in input file exactly how it is named
 	// tell user if it exists or not
@@ -1480,7 +1489,7 @@ public class WareHouseGUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				// chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+				chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
 				chooser.setFileFilter(filter);
@@ -1525,8 +1534,8 @@ public class WareHouseGUI {
 	}
 
 	/*-----------------------------------------------------------------------------------------------------------------------------------*/
-	//View Mower Section
-	
+	// View Mower Section
+
 	// View mowers in the warehouse
 	public void viewWareHouseAction() {
 		// if the ware house is empty, state that it is empty
@@ -1596,20 +1605,18 @@ public class WareHouseGUI {
 		mainPanel.setSize(new Dimension(400, 120));
 
 		DefaultListModel<String> prMowers = new DefaultListModel<String>();
-		
+
 		boolean found = false;
-
-
 
 		for (Mower m : wareHouse.getMowersList()) {
 			if (m instanceof PushReelMower) {
 				found = true;
-				
-				//split to string to print all properties stacked on top
-				String [] lines = m.toString().split("\n");
-				for(String line:lines) {
+
+				// split to string to print all properties stacked on top
+				String[] lines = m.toString().split("\n");
+				for (String line : lines) {
 					prMowers.addElement(line);
-				}	
+				}
 				prMowers.addElement("------------------------------------");
 			}
 		}
@@ -1632,7 +1639,6 @@ public class WareHouseGUI {
 
 	// View properties of all Gas Powered mowers
 	public void viewGasPoweredMower() {
-		
 
 		JDialog gasWindow = new JDialog(viewFrame, "View Gas Powered Mowers");
 		gasWindow.setPreferredSize(new Dimension(490, 300));
@@ -1648,12 +1654,12 @@ public class WareHouseGUI {
 		for (Mower m : wareHouse.getMowersList()) {
 			if (m instanceof GasPoweredMower) {
 				found = true;
-				
-				//split to string to print all properties stacked on top
-				String [] lines = m.toString().split("\n");
-				for(String line:lines) {
+
+				// split to string to print all properties stacked on top
+				String[] lines = m.toString().split("\n");
+				for (String line : lines) {
 					gpMowers.addElement(line);
-				}	
+				}
 				gpMowers.addElement("------------------------------------");
 			}
 		}
@@ -1662,8 +1668,7 @@ public class WareHouseGUI {
 			gpMowers.addElement("No Gas Powered Mowers in warehouse.");
 
 		}
-		
-		
+
 		JList<String> gList = new JList<String>(gpMowers);
 		gList.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		JScrollPane scrollPane = new JScrollPane(gList);
@@ -1678,7 +1683,6 @@ public class WareHouseGUI {
 
 	// View properties of all Commercial Mowers
 	public void viewCommercialMower() {
-		
 
 		JDialog comWindow = new JDialog(viewFrame, "View Commercial Mowers");
 		comWindow.setPreferredSize(new Dimension(490, 300));
@@ -1691,17 +1695,15 @@ public class WareHouseGUI {
 
 		DefaultListModel<String> cmMowers = new DefaultListModel<String>();
 
-
-
 		for (Mower m : wareHouse.getMowersList()) {
 			if (m instanceof CommercialMower) {
 				found = true;
-				
-				//split to string to print all properties stacked on top
-				String [] lines = m.toString().split("\n");
-				for(String line:lines) {
+
+				// split to string to print all properties stacked on top
+				String[] lines = m.toString().split("\n");
+				for (String line : lines) {
 					cmMowers.addElement(line);
-				}	
+				}
 				cmMowers.addElement("------------------------------------");
 			}
 		}
@@ -1710,8 +1712,7 @@ public class WareHouseGUI {
 			cmMowers.addElement("No Commercial Mowers in warehouse.");
 
 		}
-		
-		
+
 		JList<String> cList = new JList<String>(cmMowers);
 		cList.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		JScrollPane scrollPane = new JScrollPane(cList);
@@ -1738,16 +1739,15 @@ public class WareHouseGUI {
 
 		DefaultListModel<String> ltMowers = new DefaultListModel<String>();
 
-
 		for (Mower m : wareHouse.getMowersList()) {
 			if ((m instanceof LawnTractor) && !(m instanceof CommercialMower)) {
 				found = true;
-				
-				//split to string to print all properties stacked on top
-				String [] lines = m.toString().split("\n");
-				for(String line:lines) {
+
+				// split to string to print all properties stacked on top
+				String[] lines = m.toString().split("\n");
+				for (String line : lines) {
 					ltMowers.addElement(line);
-				}	
+				}
 				ltMowers.addElement("------------------------------------");
 			}
 		}
@@ -1756,8 +1756,7 @@ public class WareHouseGUI {
 			ltMowers.addElement("No Lawn Tractor Mowers in warehouse.");
 
 		}
-		
-		
+
 		JList<String> lList = new JList<String>(ltMowers);
 		lList.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		JScrollPane scrollPane = new JScrollPane(lList);
@@ -1769,26 +1768,135 @@ public class WareHouseGUI {
 		lawnWindow.setVisible(true);
 	}
 
-	
 	/*-----------------------------------------------------------------------------------------------------------------------------------*/
-	//Exit Program Section
+	// Exit Program Section
 	/*
-	 * TODO
-	 * Change to ask if the user would like to save the update or not
-	 * Cases:
-	 * 	- when you add a mower
-	 * 	- when you load in ware house data
-	 * 	- when you do not update anything and just want to exit
-	 * */
-	
-	// Exit out of application 
+	 * TODO Change to ask if the user would like to save the update or not 
+	 * Cases: 
+	 * - when you add a mower 
+	 * - when you load in ware house data 
+	 * - when you do not update anything and just want to exit
+	 */
+
+	// Exit out of application
 	public void exitWareHouseAction() {
-		if(updateSaved == false) {
-			saveWareHouseAction();
-		}
-		else {
+
+		// if no updates were made just exit
+		if (updateSaved == true) {
 			System.exit(0);
 		}
+
+		JDialog exitWindow = new JDialog(start, "Exit Confirmation", true);
+		exitWindow.setPreferredSize(new Dimension(700, 150));
+		exitWindow.setResizable(false);
+
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+		JPanel instruc = new JPanel();
+		JLabel instruction = new JLabel("Would you like to save your unsaved data before exiting?");
+		instruction.setFont(new Font("SansSerif", Font.BOLD, 14));
+		instruc.add(instruction);
+		instruc.setLayout(new BoxLayout(instruc, BoxLayout.LINE_AXIS));
+		mainPanel.add(instruc);
+
+		JPanel buttons = new JPanel();
+		JButton yesButton = new JButton("Yes");
+		JButton noButton = new JButton("No");
+		buttons.add(yesButton);
+		buttons.add(noButton);
+		buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
+		mainPanel.add(buttons);
+
+		exitWindow.add(mainPanel);
+
+		// if there were unsaved changes, ask the user what action to take
+		yesButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JDialog yesModal = new JDialog(exitWindow, "Save to File", true);
+				yesModal.setPreferredSize(new Dimension(500, 400));
+				yesModal.setResizable(false);
+
+				JPanel mainP = new JPanel();
+				mainP.setLayout(new BoxLayout(mainP, BoxLayout.Y_AXIS));
+				mainP.setBorder(new EmptyBorder(145, 15, 15, 15));
+				// instructions section
+				JPanel infoPanel = new JPanel();
+				JLabel info1 = new JLabel("Please enter the file you would like to save your data to.");
+				infoPanel.add(info1);
+				info1.setFont(new Font("SansSerif", Font.BOLD, 14));
+				infoPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+				infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+
+				// Section to display errors or messages to users
+				JPanel conPanel = new JPanel();
+				JLabel feedBack = new JLabel("Con Panel");
+				conPanel.add(feedBack);
+				conPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+				conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.Y_AXIS));
+
+				// Section for user input
+				JPanel inputPanel = new JPanel();
+				JTextField input = new JTextField();
+				JButton saveButton = new JButton("Save Data");
+
+				input.setEditable(true);
+				input.setPreferredSize(new Dimension(200, 20));
+				input.setMaximumSize(new Dimension(200, 20));
+				input.setMinimumSize(new Dimension(200, 20));
+
+				inputPanel.add(input);
+				inputPanel.add(saveButton);
+				inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+				inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
+
+				mainP.add(infoPanel);
+				mainP.add(conPanel);
+				mainP.add(inputPanel);
+
+				yesModal.add(mainP);
+				
+				
+				//Save changed data to file before exiting
+				saveButton.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (input.getText().isEmpty() || input.getText().isBlank()) {
+							feedBack.setText("Please enter a valid file name.");
+						} else {
+							wareHouse.saveMowerData(input.getText());
+							updateSaved = true;
+							System.exit(0);
+						}
+
+					}
+
+				});
+
+				yesModal.pack();
+				yesModal.setVisible(true);
+
+			}
+
+		});
+
+		// call to exit program if user says no
+		noButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+
+			}
+
+		});
+
+		exitWindow.pack();
+		exitWindow.setVisible(true);
 
 	}
 
