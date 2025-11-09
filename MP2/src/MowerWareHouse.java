@@ -71,6 +71,7 @@ public class MowerWareHouse {
 	
 	// Read in input file
 	public void readMowerData(String inputFileName) {
+		mowers.clear();
 		try(Scanner scnr = new Scanner(new File(inputFileName))){
 			storeName = scnr.nextLine();
 			//System.out.println(storeName);
