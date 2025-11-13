@@ -114,7 +114,7 @@ public class WareHouseGUI {
 					storeName = wareHouse.getStoreName();
 					confirmation.setText("Store Name Saved!");
 
-					greeting.setText("Welcome to " + storeName);
+					greeting.setText("Welcome to " + storeName + "!");
 
 					addFields.dispose();
 				}
@@ -205,7 +205,7 @@ public class WareHouseGUI {
 	/*--------------------------------------------------------------------------------------------------------------------------------------------*/
 	// Add Mower Section
 
-	// Add mower to warehouse action
+	
 	// Starting page to add different mower types
 	public void addMowerAction() {
 		// TODO 
@@ -1354,14 +1354,8 @@ public class WareHouseGUI {
 	// Save Mower Section
 
 	// Save warehouse data to a file
-	/*
-	 * Should provide dialog to allow user to provide an output file name and then
-	 * save the in - memory warehouse to a file
-	 */
+	// Allows user to provide an output file name and save the in - memory warehouse to that file
 	public void saveWareHouseAction() {
-		// TODO Auto-generated method stub
-		// can not save with no name and no mowers so ask for that first
-		// if there is a name and mowers, call the to string and print it out.
 
 		JFrame saveFrame = new JFrame("Save WareHouse Data");
 
@@ -1381,12 +1375,22 @@ public class WareHouseGUI {
 		greetings.setFont(new Font("SansSerif", Font.BOLD, 20));
 		greetings.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JLabel instructions = new JLabel("Input name of file you want to save WareHouse data to.");
+		JLabel instructions = new JLabel("Input name of file you want to save warehouse data to.");
 		instructions.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+		
+		JLabel note1 = new JLabel("Note: This file has the same format as the input file.");
+		note1.setFont(new Font("SansSerif", Font.BOLD, 13));
+		note1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		JLabel note2 = new JLabel("Note: If there is no warehouse name it will be left as null.");
+		note2.setFont(new Font("SansSerif", Font.BOLD, 13));
+		note2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
 		infoPanel.add(greetings);
 		infoPanel.add(instructions);
+		infoPanel.add(note1);
+		infoPanel.add(note2);
 
 		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
 
@@ -1414,8 +1418,14 @@ public class WareHouseGUI {
 
 				if (input.getText().isEmpty() || input.getText().isBlank()) {
 					confirmation.setText("Please type in a valid file name.");
-				} else {
-					wareHouse.saveMowerData(input.getText());
+				}
+				else {
+					// Ensure data is saved as a .txt file
+					String fileName = input.getText().strip();
+					if(fileName.toLowerCase().endsWith(".txt") == false) {
+						fileName +=".txt";
+					}
+					wareHouse.saveMowerData(fileName);
 					confirmation.setText(wareHouse.getOutString());
 					updateSaved = true;
 				}
@@ -1437,14 +1447,8 @@ public class WareHouseGUI {
 	/*-----------------------------------------------------------------------------------------------------------------------------------*/
 	// Load Mower Section
 
-	// Load mower data from file.
-	// type in input file exactly how it is named
-	// tell user if it exists or not
-	// it is assumed it will follow the input format as specified
-	// TODO
-	/*
-	 * change it to use jfilechooser as specified in the document
-	 */
+	// Allows user to load mower data from input file
+
 	public void loadWareHouseAction() {
 
 		JFrame loadFrame = new JFrame("Load WareHouse Data");
@@ -1479,17 +1483,17 @@ public class WareHouseGUI {
 		labelPanel.add(note1);
 		labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.PAGE_AXIS));
 		
-		// where input field is located
+		// inputPanel components field is located
 
 		JButton loadButton = new JButton("Load");
 		JButton fileButton = new JButton("View File Format");
 
-		// where the confirmation that it was loaded will be
+		// Where the confirmation that it was loaded will be
 		JLabel confirmation = new JLabel("");
 
 		confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// if load button is pressed, call readMowerData
+		// If load button is pressed, call readMowerData
 		loadButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -1509,7 +1513,7 @@ public class WareHouseGUI {
 					try {
 						wareHouse.readMowerData(filepath);
 						storeName = wareHouse.getStoreName();
-						greeting.setText("Welcome to " + storeName);
+						greeting.setText("Welcome to " + storeName + "!");
 						confirmation.setText(wareHouse.getOutString());
 						updateSaved = false;
 					}
@@ -1613,7 +1617,7 @@ public class WareHouseGUI {
 	/*-----------------------------------------------------------------------------------------------------------------------------------*/
 	// View Mower Section
 
-	// View mowers in the warehouse
+	// Allows user to view mowers in the warehouse
 	public void viewWareHouseAction() {
 		// if the ware house is empty, state that it is empty
 		// otherwise call MowerWareHouse toString and display it.
@@ -1689,7 +1693,7 @@ public class WareHouseGUI {
 			if (m instanceof PushReelMower) {
 				found = true;
 
-				// split to string to print all properties stacked on top
+				// split toString to print all properties stacked on top
 				String[] lines = m.toString().split("\n");
 				for (String line : lines) {
 					prMowers.addElement(line);
@@ -1732,7 +1736,7 @@ public class WareHouseGUI {
 			if (m instanceof GasPoweredMower) {
 				found = true;
 
-				// split to string to print all properties stacked on top
+				// split toString to print all properties stacked on top
 				String[] lines = m.toString().split("\n");
 				for (String line : lines) {
 					gpMowers.addElement(line);
@@ -1776,7 +1780,7 @@ public class WareHouseGUI {
 			if (m instanceof CommercialMower) {
 				found = true;
 
-				// split to string to print all properties stacked on top
+				// split toString to print all properties stacked on top
 				String[] lines = m.toString().split("\n");
 				for (String line : lines) {
 					cmMowers.addElement(line);
@@ -1820,7 +1824,7 @@ public class WareHouseGUI {
 			if ((m instanceof LawnTractor) && !(m instanceof CommercialMower)) {
 				found = true;
 
-				// split to string to print all properties stacked on top
+				// split toString to print all properties stacked on top
 				String[] lines = m.toString().split("\n");
 				for (String line : lines) {
 					ltMowers.addElement(line);
@@ -1884,6 +1888,7 @@ public class WareHouseGUI {
 		buttons.add(yesButton);
 		buttons.add(noButton);
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
+		
 		mainPanel.add(buttons);
 
 		exitWindow.add(mainPanel);
@@ -1945,8 +1950,16 @@ public class WareHouseGUI {
 					public void actionPerformed(ActionEvent e) {
 						if (input.getText().isEmpty() || input.getText().isBlank()) {
 							feedBack.setText("Please enter a valid file name.");
-						} else {
-							wareHouse.saveMowerData(input.getText());
+						} 
+						else {
+							String fileName = input.getText().strip();
+							
+							// Ensure data is saved as a .txt file
+							if(fileName.toLowerCase().endsWith(".txt") == false) {
+								fileName +=".txt";
+							}
+							
+							wareHouse.saveMowerData(fileName);
 							updateSaved = true;
 							System.exit(0);
 							exitWindow.dispose();

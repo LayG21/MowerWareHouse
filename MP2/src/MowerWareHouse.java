@@ -200,7 +200,7 @@ public class MowerWareHouse {
 			
 		}
 		catch(Exception e) {
-			setOutString("File Not Saved");
+			setOutString("File Not Saved.");
 			System.err.println("Trouble saving file:" + e.getMessage());
 			//e.printStackTrace();
 		}
