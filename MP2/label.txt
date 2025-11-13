@@ -1,0 +1,67 @@
+#label.txt
+#This file explains what each line in in.txt represents and should not be used as input for the program.
+#The values are for reference
+
+Monstrous Mower Warehouse    ->Mower Warehouse Store Name (string)
+
+#Lawn Tractor example
+Briggs and Stratton	         ->Mower Manufacturer (string)	     
+2015					     ->Mower Year (int)
+AFXH1					     ->Mower Serial Number (string)
+
+L						     ->Mower Subclass (Lawn Tractor)
+Gravely Parts				 ->Engine Manufacturer (string)
+10.8						 ->Engine Horse Power (double)
+2						     ->Engine Cylinders (int)
+Model1					     ->Lawn Tractor Model (string)
+45.5						 ->Lawn Tractor Deck Width (double)
+
+#Commercial Mower Example
+B&H Manufacturing		     ->Mower Manufacturer (string)
+2011						 ->Mower Year (int)
+AFXH2					     ->Mower Serial Number (string)
+
+C						     ->Mower Subclass (Commercial Mower)
+Poulan Parts				 ->Engine Manufacturer (string)
+10.5						 ->Engine Horse Power (double)	
+2						     ->Engine Cylinders (int)
+Model2					     ->Lawn Tractor Model (string)
+5.8						     ->Lawn Tractor Deck Width (double)
+35.5						 ->Commercial Mower Operating Hours (double)
+false					     ->Commercial Mower Zero Turn Radius (boolean)
+
+##Gas Powered Mower Example
+Bush Hog Manufacturing	     ->Mower Manufacturer (string)
+2013					     ->Mower Year (int)
+AFXH3					     ->Mower Serial Number (string)
+
+G						     ->Mower Subclass (Gas Powered Mower)
+20.0						 ->Walk Behind Mower Cut Width (double)
+16.0						 ->Walk Behind Mower Wheel Diameter (double)
+Homelite Parts			     ->Engine Manufacturer  (string)
+10.5						 ->Engine HorsePower  (double)
+2						     ->Engine Cylinders  (int)
+true						 ->Gas Powered Mower selfPropelled  (boolean)
+
+#Push Reel Mower Example
+Ferris Industries			 ->Mower Manufacturer (string)
+2003					     ->Mower Year (int)
+AFXH4					     ->Mower Serial Number (string)
+
+P						     ->Mower subclass (Push Reel Mower)
+18.0						 ->Walk Behind Mower Cut Width (double)
+25.1						 ->Walk Behind Mower Wheel Diameter (double)
+4						     ->Push Reel Mower Number of Wheels (int)
+
+#Lawn Tractor Example
+Briggs and Stratton II		 ->Mower Manufacturer (string)
+2015					     ->Mower Year (int)
+AFXH1vv					     ->Mower Serial Number (string)
+
+
+L						     ->Mower Subclass (Lawn Tractor)
+Gravely Parts				 ->Engine Manufacturer (string)
+13.3						 ->Engine Horse Power (double)
+2						     ->Engine Cylinders (int)
+Model1					     ->Lawn Tractor Model (string)
+45.5						 ->Lawn Tractor Deck Width (double)

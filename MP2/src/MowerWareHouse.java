@@ -182,10 +182,10 @@ public class MowerWareHouse {
 						break;
 				}
 			}
-			setOutString("File Loaded!");
+			setOutString("File Loaded Successfully!");
 		}
 		catch(Exception e) {
-			setOutString("File Not Opened");
+			setOutString("Trouble Reading file.");
 			System.err.println("Trouble reading file: " + e.getMessage());
 			//e.printStackTrace();
 		}
