@@ -182,7 +182,7 @@ public class MowerWareHouse {
 						break;
 				}
 			}
-			setOutString("File Loaded Successfully!");
+			setOutString("File " + inputFileName + " Loaded Successfully!");
 		}
 		catch(Exception e) {
 			setOutString("Trouble Reading file.");
@@ -195,7 +195,7 @@ public class MowerWareHouse {
 	public void saveMowerData(String outputFileName) {
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName))) {
 			writer.write(this.toString());
-			setOutString("File Successfully Saved!");
+			setOutString("File " + outputFileName +" Successfully Saved!");
 			System.out.println("File saved successfully.");
 			
 		}

@@ -19,6 +19,7 @@ import java.util.Scanner;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -59,60 +60,73 @@ public class WareHouseGUI {
 	// Allow user to name the warehouse
 	public void changeWareHouseName() {
 		
-		
 		JDialog addFields = new JDialog(homePage, "Add Mower Warehouse Name");
-		addFields.setPreferredSize(new Dimension(500, 400));
+		addFields.setSize(new Dimension(500, 400));
 		addFields.setResizable(false);
 
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		mainPanel.setBorder(new EmptyBorder(120, 20, 20, 20));
-
-		JPanel infoPanel = new JPanel(); // Panel for page information
-		JPanel conPanel = new JPanel(); // Panel for saving confirmation
-		JPanel inputPanel = new JPanel(); // Panel for store name input
-
-		// infoPanel components
+		
+		// Main Panel Components
+		
+		// Information Panel components
+		// Panel for page information
+		JPanel infoPanel = new JPanel(); 
 		JLabel info = new JLabel("Welcome to the name warehouse page.");
-		info.setFont(new Font("SansSerif", Font.BOLD, 20));
+		info.setFont(new Font("SansSerif", Font.BOLD, 21));
 		info.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JLabel instructions = new JLabel("Please enter your warehouse name.");
-		instructions.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		instructions.setFont(new Font("SansSerif", Font.PLAIN, 17));
 		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		infoPanel.add(info);
+		infoPanel.add(Box.createRigidArea(new Dimension(0,20)));
 		infoPanel.add(instructions);
 
-		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 
-		// inputPanel components
+		// Input Panel components and its components
+		// Panel for store name input
+		JPanel inputPanel = new JPanel(); 
 		JTextField input = new JTextField();
-		JButton saveButton = new JButton("Create Store");
-		//Border raisedBevel = BorderFactory.createRaisedBevelBorder();
-		//saveButton.setBorder(raisedBevel);
-		input.setPreferredSize(new Dimension(200, 20));
+		input.setPreferredSize(new Dimension(250, 35));
+		input.setMaximumSize(new Dimension(250, 35));
+		input.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		input.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input.setEditable(true);
+		
+		
+		JButton saveButton = new JButton("Create Store");
+		saveButton.setPreferredSize(new Dimension(100,35));
+		saveButton.setMaximumSize(new Dimension(100,35));
+
 
 		inputPanel.add(input);
+		inputPanel.add(Box.createRigidArea(new Dimension(8,0)));
 		inputPanel.add(saveButton);
+		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
 
-		// conPanel components
-		JLabel confirmation = new JLabel("");
+		// Confirmation Panel and its components
+		// Panel for confirmation
+		JPanel conPanel = new JPanel(); 
+		JLabel confirmation = new JLabel();
 		confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 		conPanel.add(confirmation);
 		conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.PAGE_AXIS));
 
 		mainPanel.add(infoPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
 		mainPanel.add(conPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0,10)));
 		mainPanel.add(inputPanel);
 
 		addFields.add(mainPanel);
-		addFields.pack();
+		addFields.setLocationRelativeTo(homePage);
 		addFields.setVisible(true);
 
-		// action to save store name and update menu with store name
+		// Action to save warehouse name and update menu with warehouse name
 		saveButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -120,13 +134,12 @@ public class WareHouseGUI {
 
 				if (input.getText().isEmpty() || input.getText().isBlank()) {
 					confirmation.setText("Please type in a valid name.");
+					confirmation.setForeground(Color.RED);
+					confirmation.setFont(new Font(null,Font.PLAIN,15));
 				} else {
-					wareHouse.setStoreName(input.getText());
+					wareHouse.setStoreName(input.getText().strip());
 					storeName = wareHouse.getStoreName();
-					confirmation.setText("Store Name Saved!");
-
 					greeting.setText("Welcome to " + storeName + "!");
-
 					addFields.dispose();
 				}
 
@@ -320,6 +333,7 @@ public class WareHouseGUI {
 
 	
 	// Starting page to add different mower types
+	
 	public void addMowerAction() {
 		// TODO 
 		// may have to check if warehouse even has a name, so they will have to add
@@ -343,7 +357,7 @@ public class WareHouseGUI {
 		greetings.setFont(new Font("SansSerif", Font.BOLD, 26));
 		greetings.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JLabel instructions = new JLabel("Please select the type of mower you would like to add to the warehouse.:");
+		JLabel instructions = new JLabel("Please select the type of mower you would like to add to the warehouse:");
 		instructions.setFont(new Font("SansSerif", Font.PLAIN, 16));
 		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -1481,60 +1495,105 @@ public class WareHouseGUI {
 	// Save warehouse data to a file
 	// Allows user to provide an output file name and save the in - memory warehouse to that file
 	public void saveWareHouseAction() {
-
-		JFrame saveFrame = new JFrame("Save WareHouse Data");
-
-		saveFrame.setPreferredSize(new Dimension(590, 400));
-		saveFrame.setResizable(false);
-
+		// Create save page
+		JFrame savePage = new JFrame("Save WareHouse Data");
+		savePage.setSize(new Dimension(590, 400));
+		savePage.setResizable(false);
+		
+		// Panels for the save page
+		
+		// Main Panel
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-		mainPanel.setBorder(new EmptyBorder(150, 20, 20, 20));
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel.setBorder(new EmptyBorder(100, 33, 33, 33));
 
-		JPanel infoPanel = new JPanel(); // Panel for page information
-		JPanel conPanel = new JPanel(); // Panel for saving confirmation
-		JPanel inputPanel = new JPanel(); // Panel for file input
-
-		// infoPanel components
-		JLabel greetings = new JLabel("Welcome to the Save Page!");
-		greetings.setFont(new Font("SansSerif", Font.BOLD, 20));
-		greetings.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		JLabel instructions = new JLabel("Input name of file you want to save warehouse data to.");
-		instructions.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
+		// Information Panel and its components
 		
-		JLabel note1 = new JLabel("Note: This file has the same format as the input file.");
-		note1.setFont(new Font("SansSerif", Font.BOLD, 13));
-		note1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		// Panel for page information
+		JPanel infoPanel = new JPanel();
+		infoPanel.setLayout(new BoxLayout(infoPanel,BoxLayout.Y_AXIS));
 		
-		JLabel note2 = new JLabel("Note: If there is no warehouse name it will be left as null.");
-		note2.setFont(new Font("SansSerif", Font.BOLD, 13));
-		note2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//Inner infoPanel to help place infoButton and greeting side by side
+		JPanel innerInfoPanel = new JPanel();
+		innerInfoPanel.setLayout(new BoxLayout(innerInfoPanel,BoxLayout.X_AXIS));
 		
-		infoPanel.add(greetings);
-		infoPanel.add(instructions);
-		infoPanel.add(note1);
-		infoPanel.add(note2);
+		// Button to get page information
+		JButton infoButton = new JButton();
+		infoButton.setPreferredSize(new Dimension(45,45));
+		infoButton.setMaximumSize(new Dimension(45,45));
 
-		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
+		ImageIcon infoIcon = new ImageIcon("info-icon.png");
+		Image scaledIcon = infoIcon.getImage().getScaledInstance(45,45, Image.SCALE_SMOOTH);
+		infoButton.setIcon(new ImageIcon(scaledIcon));
+		infoButton.setOpaque(true);
+		infoButton.setBorderPainted(false);
+		
+		// Label to greet user
+		JLabel saveGreeting = new JLabel("Welcome to the Save Page!");
+		saveGreeting.setFont(new Font("SansSerif", Font.BOLD, 26));
+		saveGreeting.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// inputPanel components
-		JTextField input = new JTextField();
-		JButton saveButton = new JButton("Save");
-		input.setPreferredSize(new Dimension(200, 20));
-		input.setEditable(true);
-
-		inputPanel.add(input);
-		inputPanel.add(saveButton);
-
-		// conPanel components
-		JLabel confirmation = new JLabel("");
+		// Label for page instructions
+		JLabel saveInstructions = new JLabel("Input name of file where you want to save warehouse data.");
+		saveInstructions.setFont(new Font("SansSerif", Font.PLAIN, 16));
+		saveInstructions.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		//Add to innerIntroPanel
+		innerInfoPanel.add(saveGreeting);
+		innerInfoPanel.add(Box.createRigidArea(new Dimension(20,0)));
+		innerInfoPanel.add(infoButton);
+		
+		//Add introPanel components
+		infoPanel.add(innerInfoPanel);
+		infoPanel.add(Box.createRigidArea(new Dimension(0,30)));
+		infoPanel.add(saveInstructions);
+		
+		/*
+		infoPanel.add(saveGreetings);
+		infoPanel.add(saveInstructions);*/
+		
+		
+		//infoPanel.add(note1);
+		//infoPanel.add(note2);
+		//infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
+		
+		// Confirmation Panel and its components
+		
+		// Panel for displaying save confirmation
+		JPanel conPanel = new JPanel(); 
+		conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.Y_AXIS));
+		
+		// Where the confirmation appears
+		JLabel confirmation = new JLabel();
+		confirmation.setFont(new Font("SansSerif",Font.PLAIN,14));
 		confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+		
+		
 		conPanel.add(confirmation);
-		conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.PAGE_AXIS));
-
+		
+		
+		// Input Panel and its  components
+		
+		// Panel for input
+		JPanel inputPanel = new JPanel(); 
+		
+		
+		JTextField input = new JTextField();
+		input.setMaximumSize(new Dimension(450, 40));
+		input.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		input.setFont(new Font(null,Font.PLAIN,15));
+		
+		input.setEditable(true);
+		JButton saveButton = new JButton("Save");
+		saveButton.setFont(new Font("SansSerif",Font.PLAIN,16));
+		saveButton.setMaximumSize(new Dimension(70, 40));
+		
+		inputPanel.setLayout(new BoxLayout(inputPanel,BoxLayout.X_AXIS));
+		inputPanel.add(input);
+		inputPanel.add(Box.createRigidArea(new Dimension(30,0)));
+		inputPanel.add(saveButton);
+		
+		
 		// action if the file is or is not saved
 		saveButton.addActionListener(new ActionListener() {
 
@@ -1543,32 +1602,181 @@ public class WareHouseGUI {
 
 				if (input.getText().isEmpty() || input.getText().isBlank()) {
 					confirmation.setText("Please type in a valid file name.");
+					confirmation.setForeground(Color.RED);
 				}
 				else {
-					// Ensure data is saved as a .txt file
-					String fileName = input.getText().strip();
-					if(fileName.toLowerCase().endsWith(".txt") == false) {
-						fileName +=".txt";
+					if (storeName == null || wareHouse.getStoreName() == null) {
+						boolean isSaved = saveNameDialog(savePage);
+						if(isSaved == false) {
+							confirmation.setText("You can not save without a warehouse name");
+							confirmation.setForeground(Color.RED);
+						}
 					}
-					wareHouse.saveMowerData(fileName);
-					confirmation.setText(wareHouse.getOutString());
-					updateSaved = true;
+					else {
+						// Ensure data is saved as a .txt file
+						String fileName = input.getText().strip();
+						if (fileName.toLowerCase().endsWith(".txt") == false) {
+							fileName += ".txt";
+						}
+						
+						wareHouse.saveMowerData(fileName);
+						confirmation.setText(wareHouse.getOutString());
+						confirmation.setForeground(new Color(18, 112, 32));
+						input.setText("");
+						updateSaved = true;
+					}
+
 				}
 
+			}
+		});
+		
+		
+		// For displaying page information
+		
+		//Custom icon to display in Information pop-up 
+		//Design for JOptionPane
+		JPanel panePanel = new JPanel();
+		panePanel.setBackground(new Color(240,240,255));
+		panePanel.setLayout(new BoxLayout(panePanel,BoxLayout.Y_AXIS));
+		
+		// create a raised panel with padding
+		panePanel.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createRaisedBevelBorder(),
+				new EmptyBorder(20, 20, 20, 20)
+		));
+		
+		JLabel note1 = new JLabel("Save Page Information:");
+		note1.setFont(new Font("SansSerif", Font.BOLD, 17));
+		note1.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		JLabel note2 = new JLabel("- This file has the same format as the input file.");
+		note2.setFont(new Font("SansSerif", Font.BOLD, 14));
+		note2.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		
+		panePanel.add(note1);
+		panePanel.add(Box.createRigidArea(new Dimension(0,8)));
+		panePanel.add(note2);
+		
+		ImageIcon paneIcon = new ImageIcon (infoIcon.getImage().getScaledInstance(45,45, Image.SCALE_SMOOTH));
+		
+		//call for store name information pop-up
+		infoButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(
+						savePage,
+						panePanel,
+						"Information",
+						JOptionPane.INFORMATION_MESSAGE,
+						paneIcon
+						);
 			}
 
 		});
 
 		mainPanel.add(infoPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0,15)));
 		mainPanel.add(conPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0,30)));
 		mainPanel.add(inputPanel);
 
-		saveFrame.add(mainPanel);
-		saveFrame.pack();
-		saveFrame.setVisible(true);
+		savePage.add(mainPanel);
+		savePage.setLocationRelativeTo(null);
+		savePage.setVisible(true);
 
 	}
+	
+	// Pop-up modal to set warehouse name
+	boolean wareHouseNamed = false;
+	public boolean saveNameDialog(JFrame parentFrame) {
+		// pop-up for trying to save without a warehouse name
+		JDialog nameDialog = new JDialog(parentFrame,"Warehouse Name Required",true);
+		nameDialog.setSize(new Dimension(600,250));
+		
+		JPanel namePanel = new JPanel();
+		namePanel.setLayout(new BoxLayout(namePanel,BoxLayout.Y_AXIS));
+		
+		// create a raised panel with padding
+		namePanel.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createRaisedBevelBorder(),
+				new EmptyBorder(20, 20, 20, 20)
+		));
+		
+		JLabel nameWarning = new JLabel("You can not save without naming your warehouse");
+		nameWarning.setFont(new Font("SansSerif", Font.BOLD, 17));
+		nameWarning.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+		JLabel nameInstruction = new JLabel("Please name your warehouse:");
+		nameInstruction.setFont(new Font("SansSerif", Font.BOLD, 17));
+		nameInstruction.setAlignmentX(Component.CENTER_ALIGNMENT); 
+		
+		// Panel for displaying save confirmation
+		JPanel nameConPanel = new JPanel(); 
+		nameConPanel.setLayout(new BoxLayout(nameConPanel, BoxLayout.Y_AXIS));
+		
+		// Where the confirmation appears
+		JLabel con = new JLabel();
+		con.setFont(new Font("SansSerif",Font.PLAIN,14));
+		con.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		nameConPanel.add(con);
+		
+		
+		JPanel inputNamePanel = new JPanel(); 
+
+		JTextField nameInput = new JTextField();
+		nameInput.setMaximumSize(new Dimension(400, 45));
+		nameInput.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		nameInput.setFont(new Font(null,Font.PLAIN,15));
+		nameInput.setEditable(true);
+		
+		JButton saveName = new JButton("Save");
+		saveName.setFont(new Font("SansSerif",Font.PLAIN,16));
+		saveName.setMaximumSize(new Dimension(90, 55));
+		
+		inputNamePanel.setLayout(new BoxLayout(inputNamePanel,BoxLayout.X_AXIS));
+		inputNamePanel.add(nameInput);
+		inputNamePanel.add(Box.createRigidArea(new Dimension(30,0)));
+		inputNamePanel.add(saveName);
+		inputNamePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		saveName.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(nameInput.getText().isBlank() || nameInput.getText().isEmpty()) {
+					con.setText("Please type in a valid name");
+					con.setForeground(Color.RED);
+				}
+				else {
+					wareHouse.setStoreName(nameInput.getText().strip());
+					storeName = wareHouse.getStoreName();
+					greeting.setText("Welcome to " + storeName + "!");
+					wareHouseNamed = true;
+					nameDialog.dispose();
+				}
+				
+				
+			}
+			
+		});
+		namePanel.add(nameWarning);
+		namePanel.add(Box.createRigidArea(new Dimension(0,30)));
+		namePanel.add(nameInstruction);
+		namePanel.add(Box.createRigidArea(new Dimension(0,30)));
+		namePanel.add(nameConPanel);
+		namePanel.add(Box.createRigidArea(new Dimension(0,10)));
+		namePanel.add(inputNamePanel);
+		
+		nameDialog.add(namePanel);
+		nameDialog.setLocationRelativeTo(parentFrame);
+		nameDialog.setVisible(true);
+		
+		return wareHouseNamed;
+	}
 	/*-----------------------------------------------------------------------------------------------------------------------------------*/
 	// Load Mower Section
 
@@ -1991,9 +2199,11 @@ public class WareHouseGUI {
 		if (updateSaved == true) {
 			System.exit(0);
 		}
+		
+		
 
-		JDialog exitWindow = new JDialog(homePage, "Exit Confirmation", true);
-		exitWindow.setPreferredSize(new Dimension(700, 150));
+		JDialog exitWindow = new JDialog(homePage, "Exit Confirmation");
+		exitWindow.setSize(new Dimension(700, 150));
 		exitWindow.setResizable(false);
 
 		JPanel mainPanel = new JPanel();
@@ -2019,86 +2229,14 @@ public class WareHouseGUI {
 		exitWindow.add(mainPanel);
 
 		// If there were unsaved changes, ask the user what action to take
+		
 		yesButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JDialog yesModal = new JDialog(exitWindow, "Save to File", true);
-				yesModal.setPreferredSize(new Dimension(500, 400));
-				yesModal.setResizable(false);
-
-				JPanel mainP = new JPanel();
-				mainP.setLayout(new BoxLayout(mainP, BoxLayout.Y_AXIS));
-				mainP.setBorder(new EmptyBorder(145, 15, 15, 15));
+				saveWareHouseAction();
 				
-				// Section for instructions
-				JPanel infoPanel = new JPanel();
-				JLabel info1 = new JLabel("Please enter the file name you would like to save your data to.");
-				infoPanel.add(info1);
-				info1.setFont(new Font("SansSerif", Font.BOLD, 14));
-				infoPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-				infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-
-				// Section to display errors or messages to users
-				JPanel conPanel = new JPanel();
-				JLabel feedBack = new JLabel("");
-				conPanel.add(feedBack);
-				conPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-				conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.Y_AXIS));
-
-				// Section for user input
-				JPanel inputPanel = new JPanel();
-				JTextField input = new JTextField();
-				JButton saveButton = new JButton("Save Data");
-
-				input.setEditable(true);
-				input.setPreferredSize(new Dimension(200, 20));
-				input.setMaximumSize(new Dimension(200, 20));
-				input.setMinimumSize(new Dimension(200, 20));
-
-				inputPanel.add(input);
-				inputPanel.add(saveButton);
-				inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-				inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
-
-				mainP.add(infoPanel);
-				mainP.add(conPanel);
-				mainP.add(inputPanel);
-
-				yesModal.add(mainP);
-				
-				
-				//Save changed data to file before exiting
-				saveButton.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						if (input.getText().isEmpty() || input.getText().isBlank()) {
-							feedBack.setText("Please enter a valid file name.");
-						} 
-						else {
-							String fileName = input.getText().strip();
-							
-							// Ensure data is saved as a .txt file
-							if(fileName.toLowerCase().endsWith(".txt") == false) {
-								fileName +=".txt";
-							}
-							
-							wareHouse.saveMowerData(fileName);
-							updateSaved = true;
-							System.exit(0);
-							exitWindow.dispose();
-						}
-
-					}
-
-				});
-
-				yesModal.pack();
-				yesModal.setVisible(true);
 
 			}
-
 		});
 
 		// call to exit program if user says no
@@ -2112,8 +2250,8 @@ public class WareHouseGUI {
 			}
 
 		});
-
-		exitWindow.pack();
+		
+		exitWindow.setLocationRelativeTo(homePage);
 		exitWindow.setVisible(true);
 
 	}
