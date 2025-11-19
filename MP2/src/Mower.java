@@ -47,12 +47,25 @@ public abstract class Mower {
 	public String getSerialNumber() {
 		return serialNumber;
 	}
-
 	
+	
+	// label each property for user to confirm input
+	public String confirmString() {
+		return "Mower Manufacturer: " + getManufacturer() + "\n"
+				+ "Mower Year: " + getYear() + "\n"
+				+ "Mower Serial Number: " + getSerialNumber();
+	}
+	
+	//ToString
 	// Put each property on a separate line
 	@Override
 	public String toString() {
-		return manufacturer + "\n" + year + "\n" + serialNumber; 
+		return getManufacturer() + "\n" 
+				+ getYear() + "\n" 
+				+ getSerialNumber(); 
 	}
+
+
+
 
 }

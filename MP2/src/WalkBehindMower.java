@@ -28,12 +28,21 @@ public double getWheelDiameter() {
 }
 
 
-//To do: ToString 
+//label each property for user to confirm input
+@Override
+	public String confirmString() {
+		return super.confirmString() + "\n"
+				+ "Cut Width: " + getCutWidth() +"\n"
+				+ "Wheel Diameter: " + getWheelDiameter();
+	}
+
+
+//ToString 
 //Put each property on a separate line
 @Override
 public String toString() {
-	return cutWidth + "\n" 
-    + wheelDiameter;
+	return getCutWidth() + "\n" 
+    + getWheelDiameter();
 }
 
 
