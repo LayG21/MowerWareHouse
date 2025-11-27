@@ -52,11 +52,17 @@ public class Engine{
 		this.cylinders = cylinders;
 	}
 	
+	// label each property for user to confirm input
+	public String confirmString() {
+		return "Engine Manufacturer: " + getManufacturer() + "\n"
+				+ "Engine Horse Power: " + getHorsePower() + "\n"
+				+ "Engine Cylinders: " + getCylinders();
+	}
 	
 	//Put every property on separate line
 	@Override
 	public String toString() {
-		return manufacturer + "\n" + horsePower + "\n" + cylinders;
+		return getManufacturer() + "\n" + getHorsePower() + "\n" + getCylinders();
 	}
 	
 }

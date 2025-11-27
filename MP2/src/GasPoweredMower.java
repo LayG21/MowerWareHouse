@@ -24,7 +24,13 @@ public class GasPoweredMower extends WalkBehindMower {
 	public boolean getSelfPropelled() {
 		return selfPropelled;
 	}
-
+	
+	// label each property for user to confirm input
+	public String confirmString() {
+		return super.confirmString() + "\n"
+				+ getEngine().confirmString() + "\n"
+				+ "Is Self Propelled?: " + getSelfPropelled();
+	}
 //toString
 //put each property on a separate line
 	@Override
@@ -34,8 +40,8 @@ public class GasPoweredMower extends WalkBehindMower {
 		+ getSerialNumber() 
 		+ "\nG\n" 
 		+ super.toString() + "\n" 
-		+ engine.toString() + "\n" 
-		+ selfPropelled;
+		+ getEngine().toString() + "\n" 
+		+ getSelfPropelled();
 	}
 
 }

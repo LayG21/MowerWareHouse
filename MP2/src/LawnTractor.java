@@ -46,15 +46,22 @@ public class LawnTractor extends Mower{
 		this.deckwidth = deckwidth;
 	}
 	
+	// label each property for user to confirm input
+	public String confirmString() {
+		return super.confirmString() + "\n"
+				+ getEngine().confirmString() + "\n"
+				+ "Lawn Tractor Model: " + getModel() + "\n"
+				+ "Lawn Tractor Deck Width: " + getDeckWidth();
+	}
 	
 	//Put each property on a separate line
 	@Override
 	public String toString() {
 		return super.toString() 
 				+ "\nL\n" 
-				+ engine.toString() + "\n" 
-				+ model + "\n" 
-				+ deckwidth;
+				+ getEngine().toString() + "\n" 
+				+ getModel() + "\n" 
+				+ getDeckWidth();
 		
 	}
 	

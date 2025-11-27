@@ -32,8 +32,8 @@ public double getWheelDiameter() {
 @Override
 	public String confirmString() {
 		return super.confirmString() + "\n"
-				+ "Cut Width: " + getCutWidth() +"\n"
-				+ "Wheel Diameter: " + getWheelDiameter();
+				+ "Walk Behind Mower Cut Width: " + getCutWidth() +"\n"
+				+ "Walk Behind Mower Wheel Diameter: " + getWheelDiameter();
 	}
 
 

@@ -28,7 +28,13 @@ public class CommercialMower extends LawnTractor{
 		return zeroTurnRadius;
 	}
 	
-	 
+	// label each property for user to confirm input
+	public String confirmString() {
+		return super.confirmString() + "\n"
+				+ "Commercial Operating Hours: " + getModel() + "\n"
+				+ "Is Zero Turn Radius?: " + getZeroTurnRadius();
+	}
+	
 	//Put each property on a separate line 
 	@Override
 	public String toString() {
@@ -39,8 +45,8 @@ public class CommercialMower extends LawnTractor{
 		+ getEngine().toString() + "\n" 
 		+ getModel() + "\n" 
 		+ getDeckWidth() + "\n" 
-		+ operatingHours + "\n" 
-		+ zeroTurnRadius;
+		+ getOperatingHours() + "\n" 
+		+ getZeroTurnRadius();
 	}
 	
 }

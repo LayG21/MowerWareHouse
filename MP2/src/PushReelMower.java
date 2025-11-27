@@ -19,7 +19,7 @@ public class PushReelMower extends WalkBehindMower {
 // label each property for user to confirm input
 	public String confirmString() {
 		return super.confirmString() + "\n"
-				+"Number of Wheels: " + getNumWheels();
+				+"Push Reel Mower Number of Wheels: " + getNumWheels();
 	}
 //ToString
 //put each property on a separate line
@@ -30,7 +30,7 @@ public class PushReelMower extends WalkBehindMower {
 	    + getSerialNumber()
 	    + "\nP\n"
 	    + super.toString() + "\n"
-	    + numWheels;
+	    + getNumWheels();
 	}
 
 }
