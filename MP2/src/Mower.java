@@ -25,7 +25,7 @@ public abstract class Mower {
 	}
 
 	public String getManufacturer() {
-		return manufacturer;
+		return this.manufacturer;
 	}
 
 	
@@ -35,7 +35,7 @@ public abstract class Mower {
 	}
 
 	public int getYear() {
-		return year;
+		return this.year;
 	}
 
 	
@@ -45,14 +45,21 @@ public abstract class Mower {
 	}
 
 	public String getSerialNumber() {
-		return serialNumber;
+		return this.serialNumber;
 	}
 	
 	
-	// label each property for user to confirm input
+	// label each property for user to confirm input (For UI)
 	public String confirmString() {
-		return "Mower Manufacturer: " + getManufacturer() + "\n"
-				+ "Mower Year: " + getYear() + "\n"
+		return "Mower Manufacturer: " + getManufacturer() + "\n\n"
+				+ "Mower Year: " + String.format("%04d",getYear()) + "\n\n" 
+				+ "Mower Serial Number: " + getSerialNumber();
+	}
+	
+	//String for displaying all mowers of his type (For UI)
+	public String listDisplayString() {
+		return "Mower Manufacturer: " + getManufacturer() + "<br>"
+				+ "Mower Year: " + String.format("%04d",getYear()) + "<br>" 
 				+ "Mower Serial Number: " + getSerialNumber();
 	}
 	
@@ -61,7 +68,7 @@ public abstract class Mower {
 	@Override
 	public String toString() {
 		return getManufacturer() + "\n" 
-				+ getYear() + "\n" 
+				+ String.format("%04d",getYear()) + "\n" 
 				+ getSerialNumber(); 
 	}
 

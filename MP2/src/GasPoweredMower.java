@@ -25,18 +25,28 @@ public class GasPoweredMower extends WalkBehindMower {
 		return selfPropelled;
 	}
 	
-	// label each property for user to confirm input
+	// label each property for user to confirm input (For UI)
 	public String confirmString() {
-		return super.confirmString() + "\n"
-				+ getEngine().confirmString() + "\n"
+		return super.confirmString() + "\n\n"
+				+ getEngine().confirmString() + "\n\n"
 				+ "Is Self Propelled?: " + getSelfPropelled();
+	}
+	
+	//String for displaying all mowers of his type (For UI)
+	@Override
+	public String listDisplayString() {
+		return "<html>"
+				+ super.listDisplayString() + "<br>"
+				+ getEngine().listDisplayString() + "<br>"
+				+ "Is Self Propelled?: " + getSelfPropelled()
+				+ "</html>";
 	}
 //toString
 //put each property on a separate line
 	@Override
 	public String toString() {
 		return getManufacturer() + "\n" 
-		+ getYear() + "\n" 
+		+ String.format("%04d",getYear()) + "\n" 
 		+ getSerialNumber() 
 		+ "\nG\n" 
 		+ super.toString() + "\n" 

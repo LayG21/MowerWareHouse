@@ -52,10 +52,17 @@ public class Engine{
 		this.cylinders = cylinders;
 	}
 	
-	// label each property for user to confirm input
+	// label each property for user to confirm input (For UI)
 	public String confirmString() {
-		return "Engine Manufacturer: " + getManufacturer() + "\n"
-				+ "Engine Horse Power: " + getHorsePower() + "\n"
+		return "Engine Manufacturer: " + getManufacturer() + "\n\n"
+				+ "Engine Horse Power: " + getHorsePower() + "\n\n"
+				+ "Engine Cylinders: " + getCylinders();
+	}
+	
+	// label each property for user to confirm input (For UI)
+	public String listDisplayString() {
+		return "Engine Manufacturer: " + getManufacturer() + "<br>"
+				+ "Engine Horse Power: " + getHorsePower() + "<br>"
 				+ "Engine Cylinders: " + getCylinders();
 	}
 	

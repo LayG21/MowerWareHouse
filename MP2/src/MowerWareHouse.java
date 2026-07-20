@@ -9,12 +9,16 @@ public class MowerWareHouse {
 	private String storeName;					//Name of the mower store
 	private ArrayList<Mower> mowers;		    // List of mowers in the warehouse
 	private String outString;
+	private boolean loadError;					// For user to know a error occurred with loading
+
 	
 	// Constructor
 	public MowerWareHouse() {
 		storeName = null;
 		mowers = new ArrayList<Mower>();
 		outString = "";
+		loadError = false;
+		
 	}
 	
 	//Setters and getters
@@ -42,6 +46,14 @@ public class MowerWareHouse {
 		this.outString = outcome;
 	}
 	
+	public boolean getLoadError() {
+		return this.loadError;
+	}
+	public void setLoadError(boolean loadError) {
+		this.loadError = loadError;
+	}
+	
+	
 	//Methods for ArrayList
 	
 	//Returns number of items in mower list
@@ -65,15 +77,21 @@ public class MowerWareHouse {
 	}
 	
 	//Remove and return the widget at index
-	public Mower removeWidget(int index) {
+	public Mower removeMower(int index) {
 		return this.mowers.remove(index);
 	}
-	
+
 	// Read in input file
 	public void readMowerData(String inputFileName) {
-		mowers.clear();
+		//mowers.clear();
+		storeName = null;
+		setLoadError(false);
+		setOutString("");
+		
+		ArrayList <Mower> tempMowers = new ArrayList<>();
+		String tempStoreName = null;
 		try(Scanner scnr = new Scanner(new File(inputFileName))){
-			storeName = scnr.nextLine();
+			tempStoreName = scnr.nextLine();
 			//System.out.println(storeName);
 			
 			while(scnr.hasNextLine()) {
@@ -102,7 +120,7 @@ public class MowerWareHouse {
 						lt.setModel(lModel);
 						lt.setDeckWidth(lDeckWidth);
 						
-						this.mowers.add(lt);
+						tempMowers.add(lt);
 						//System.out.println(lt.toString());
 						break;
 					case 'C':
@@ -129,7 +147,7 @@ public class MowerWareHouse {
 						cm.setOperatingHours(cOperatingHours);
 						cm.setZeroTurnRadius(cZeroTurnRadius);
 						
-						this.mowers.add(cm);
+						tempMowers.add(cm);
 						
 						//System.out.println(cm.toString());
 						break;
@@ -156,7 +174,7 @@ public class MowerWareHouse {
 						
 						gw.setSelfPropelled(gSelfPropelled);
 						
-						this.mowers.add(gw);
+						tempMowers.add(gw);
 						//System.out.println(gw.toString());
 						break;
 					case 'P':
@@ -176,23 +194,31 @@ public class MowerWareHouse {
 						
 						pm.setNumWheels(pNumWheels);
 						
-						this.mowers.add(pm);
+						tempMowers.add(pm);
 						
 						//System.out.println(pm.toString());
 						break;
 				}
 			}
+			this.mowers = tempMowers;
+			setStoreName(tempStoreName);
+			
+			setLoadError(false);
 			setOutString("File " + inputFileName + " Loaded Successfully!");
+			
 		}
 		catch(Exception e) {
 			setOutString("Trouble Reading file.");
 			System.err.println("Trouble reading file: " + e.getMessage());
+			setLoadError(true);
+			return;
 			//e.printStackTrace();
 		}
 	}
 	
+	
 	//Save mower data input file
-	public void saveMowerData(String outputFileName) {
+ 	public void saveMowerData(String outputFileName) {
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName))) {
 			writer.write(this.toString());
 			setOutString("File " + outputFileName +" Successfully Saved!");

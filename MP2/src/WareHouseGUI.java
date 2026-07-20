@@ -37,6 +37,12 @@ public class WareHouseGUI {
 	public PushReelMower pr;
 	public LawnTractor lt;
 	public Engine le;
+	public GasPoweredMower gp;
+	public Engine ge;
+	public CommercialMower cw;
+	public Engine ce;
+	public boolean exitCalled = false;
+	public int mowerNumber;
 	
 	// Launch the Application
 	public static void main(String[] args) {
@@ -145,6 +151,7 @@ public class WareHouseGUI {
 					wareHouse.setStoreName(input.getText().strip());
 					storeName = wareHouse.getStoreName();
 					greeting.setText("Welcome to " + storeName + "!");
+					updateSaved = false;
 					addFields.dispose();
 				}
 
@@ -160,7 +167,7 @@ public class WareHouseGUI {
 		
 		//Create the home page
 		homePage = new JFrame("Home Page");
-		homePage.setSize(new Dimension(1000, 500));
+		homePage.setSize(new Dimension(1200, 500));
 		homePage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		homePage.setResizable(false);
 		
@@ -229,6 +236,9 @@ public class WareHouseGUI {
 		JButton rename = new JButton("Rename Warehouse");
 		rename.setFont(new Font("SansSerif",Font.PLAIN,16));
 		
+		JButton deleteMower = new JButton("Delete Mower");
+		deleteMower.setFont(new Font("SansSerif",Font.PLAIN,16));
+		
 		JButton exit = new JButton("Exit");
 		exit.setFont(new Font("SansSerif",Font.PLAIN,16));
 		
@@ -239,6 +249,7 @@ public class WareHouseGUI {
 		loadFile.addActionListener(e -> loadWareHouseAction());
 		saveFile.addActionListener(e -> saveWareHouseAction());
 		rename.addActionListener(e->changeWareHouseName());
+		deleteMower.addActionListener(e->deleteMowerAction());
 		exit.addActionListener(e -> exitWareHouseAction());
 
 		// Add buttons to be displayed
@@ -251,6 +262,8 @@ public class WareHouseGUI {
 		optionsPanel.add(saveFile);
 		optionsPanel.add(Box.createRigidArea(new Dimension(15,0)));
 		optionsPanel.add(rename);
+		optionsPanel.add(Box.createRigidArea(new Dimension(15,0)));
+		optionsPanel.add(deleteMower);
 		optionsPanel.add(Box.createRigidArea(new Dimension(15,0)));
 		optionsPanel.add(exit);
 
@@ -338,11 +351,303 @@ public class WareHouseGUI {
 
 		updateSaved = true;
 	}
+	
+	/*--------------------------------------------------------------------------------------------------------------------------------------------*/
+	// Delete Mower Section
+	
+	//Staring page to delete mower
+	public void  deleteMowerAction() {
+		JFrame delPage = new JFrame("Delete Mower Data");
+		delPage.setSize(new Dimension(1100, 700));
+		delPage.setResizable(false);
+		
+		// Panels for Delete Mower Page
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
+		mainPanel.setBorder(new EmptyBorder(90, 10, 30, 10));
+		
+		
+		// Panel for Page information and greetings
+		JPanel infoPanel = new JPanel();
+		
+		JLabel instruc1 = new JLabel("Enter the number of the mower you wish to delete.");
+		instruc1.setFont(new Font("SansSerif",Font.BOLD,18));
+		instruc1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		JLabel instruc2 = new JLabel("The right side will show submission details for confirmation.");
+		instruc2.setFont(new Font("SansSerif",Font.PLAIN,16));
+		instruc2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		JLabel instruc3 = new JLabel("Press confirm if you are satisfied.");
+		instruc3.setFont(new Font("SansSerif",Font.BOLD,16));
+		instruc3.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		infoPanel.add(instruc1);
+		infoPanel.add(instruc2);
+		infoPanel.add(instruc3);
+		infoPanel.setLayout(new BoxLayout(infoPanel,BoxLayout.Y_AXIS));
+		infoPanel.setMaximumSize(infoPanel.getPreferredSize());
+		
+		// Confirmation Panel and its components
+		// Panel for confirmation
+		JPanel conPanel = new JPanel();
+		
+		JLabel confirmation = new JLabel("");
+		confirmation.setFont(new Font("SansSerif",Font.PLAIN,16));
+		confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		conPanel.add(confirmation);
+		conPanel.setPreferredSize(new Dimension(500,50));
+		conPanel.setMaximumSize(conPanel.getPreferredSize());
+		
+		JPanel numPanel = new JPanel();
+		
+		JLabel numMowers = new JLabel("Current Number of Mowers: 0");
+		numMowers.setFont(new Font("SansSerif",Font.PLAIN,16));
+		numMowers.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		numPanel.add(numMowers);
+		numPanel.setPreferredSize(new Dimension(400,50));
+		numPanel.setMaximumSize(numPanel.getPreferredSize());
+		
+		// Field Panel and its components
+		// Panel for input
+		JPanel fieldPanel = new JPanel();
+		fieldPanel.setLayout(new BoxLayout(fieldPanel,BoxLayout.X_AXIS));
+		fieldPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		// Inner panels for fieldPanel
+		// Panel for input fields
+		JPanel inputPanel = new JPanel();
+		inputPanel.setPreferredSize(new Dimension(800, 350));
+		inputPanel.setMaximumSize(new Dimension(800,350));
+		TitledBorder inputTitle = BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), 
+				"Mower List",
+				TitledBorder.LEFT, 
+				TitledBorder.ABOVE_TOP,
+				new Font("SanSerif",Font.PLAIN,15),
+				Color.BLACK
+				);
+		inputPanel.setBorder(inputTitle);
+		inputPanel.setLayout(new BoxLayout(inputPanel,BoxLayout.Y_AXIS));
+		
+		// Displays what mower the user is deleting for confirmation
+		JPanel displayPanel = new JPanel();
+		displayPanel.setPreferredSize(new Dimension(500, 350));
+		displayPanel.setMaximumSize(new Dimension(500,350));
+		displayPanel.setLayout(new BoxLayout(displayPanel,BoxLayout.Y_AXIS));
+		TitledBorder displayTitle = BorderFactory.createTitledBorder(
+				BorderFactory.createEmptyBorder(), 
+				"Mower Deletion Confirmation",
+				TitledBorder.LEFT, 
+				TitledBorder.ABOVE_TOP,
+				new Font("SanSerif",Font.PLAIN,15),
+				Color.BLACK
+				);
+		displayPanel.setBorder(displayTitle);
+	
+		
+		JTextArea displayText = new JTextArea();
+		displayText.setFont(new Font("SansSerif",Font.PLAIN,15));
+		displayText.setEditable(false);
+		
+		JScrollPane confirmScroll = new JScrollPane(displayText);
+		confirmScroll.setPreferredSize(new Dimension(300,300));
+		
+		displayPanel.add(confirmScroll);
+		
+		DefaultListModel<String> displayMowers = new DefaultListModel<String>();
+		JList<String> mList = new JList<String>(displayMowers);
+		mList.setFont(new Font("SansSerif", Font.PLAIN, 17));
+		
+		JList<String> pList = new JList<String>(displayMowers);
+		pList.setFont(new Font("SansSerif", Font.PLAIN, 17));
+		JScrollPane displayScroll = new JScrollPane(pList);
+		displayScroll.setPreferredSize(new Dimension(300,300));
+		
+		// Panel for user input
+		JPanel inputFieldPanel = new JPanel();
+		inputFieldPanel.setLayout(new BoxLayout(inputFieldPanel,BoxLayout.X_AXIS));
+		
+		JTextField mowerNum = new JTextField();
+		JButton mowerDel = new JButton("Delete Mower");
+		
+		mowerDel.setPreferredSize(new Dimension(150,40));
+		mowerDel.setMaximumSize(mowerDel.getPreferredSize());
+		mowerDel.setFont(new Font("SansSerif",Font.PLAIN,15));
+		//confirmButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		
+		inputFieldPanel.add(mowerNum);
+		inputFieldPanel.add(mowerDel);
+		
+		inputPanel.add(displayScroll,BorderLayout.CENTER);
+		inputPanel.add(inputFieldPanel);
+		// Panel for confirmation buttons
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
+		
+		JButton confirmButton = new JButton("Confirm Input");
+		confirmButton.setPreferredSize(new Dimension(150,40));
+		confirmButton.setMaximumSize(confirmButton.getPreferredSize());
+		confirmButton.setFont(new Font("SansSerif",Font.PLAIN,15));
+		confirmButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setPreferredSize(new Dimension(150,40));
+		cancelButton.setMaximumSize(cancelButton.getPreferredSize());
+		cancelButton.setFont(new Font("SansSerif",Font.PLAIN,15));
+		cancelButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		
+		/*Stop user from pressing button until they press Add Mower*/
+		confirmButton.setEnabled(false);
+		cancelButton.setEnabled(false);
+		
+		buttonPanel.add(confirmButton);
+		buttonPanel.add(Box.createRigidArea(new Dimension(20, 0)));
+		buttonPanel.add(cancelButton);
+		
+		
+		displayPanel.add(buttonPanel);
+		
+		//add panels to fieldPanel
+		fieldPanel.add(inputPanel);
+		fieldPanel.add(displayPanel);
+		
+		//boolean mowersFound = false;
+
+		if (wareHouse.getNumMowers() == 0) {
+			displayMowers.addElement("No mowers available to delete.");
+		}
+
+		else {
+			numMowers.setText("Current Number of Mowers: " + wareHouse.getNumMowers()); 
+			
+			int countMowers = wareHouse.getNumMowers();
+
+			for (int count = 0; count < countMowers; count++) {
+				Mower m = wareHouse.getMowersList().get(count);
+				
+				
+				displayMowers.addElement("[ Mower #: " + (count + 1) + " ]");
+				displayMowers.addElement(m.listDisplayString());
+				displayMowers.addElement("-----------------------------------------");
+			}
+			
+			
+			mowerDel.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String userInput = mowerNum.getText().strip();
+					
+					// check if the number is greater than 0 but less than or equal to size
+					if (userInput.isEmpty() == false) {
+
+						try {
+							int input = Integer.parseInt(userInput);
+							if(input > 0 && input <= wareHouse.getNumMowers()) {
+								Mower temp = wareHouse.getMower(input - 1);
+								displayText.setText(temp.confirmString());
+								mowerNumber = input;
+								confirmation.setText("Please confirm your input.");
+								confirmation.setForeground(Color.BLACK);
+								/* Enable user to perform action for after pressing add */ 
+								confirmButton.setEnabled(true);
+								cancelButton.setEnabled(true);
+							}
+							else {
+								confirmation.setText("Enter a number between 1 and the number of mowers.");
+								confirmation.setForeground(Color.RED);
+								confirmButton.setEnabled(false);
+								cancelButton.setEnabled(false);		
+							}
+						} catch (NumberFormatException nfe) {
+							confirmation.setText("Please enter a valid number.");
+							confirmation.setForeground(Color.RED);
+							confirmButton.setEnabled(false);
+							cancelButton.setEnabled(false);		
+							return;
+						}
+					}
+				}
+			});
+			
+			confirmButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+						wareHouse.removeMower(mowerNumber - 1);
+						confirmation.setText("Mower Number " + mowerNumber + " Removed!");
+						confirmation.setForeground(new Color(18, 112, 32));
+						displayText.setText("");
+						numMowers.setText("Current Number of Mowers: " + wareHouse.getNumMowers());
+						updateSaved = false;
+						
+						// show the updated list after deleting
+						displayMowers.clear();
+						if(wareHouse.getNumMowers() == 0) {
+							displayMowers.addElement("No mowers available to delete.");
+						}
+						else {
+							for (int count = 0; count < wareHouse.getNumMowers(); count++) {
+								Mower m = wareHouse.getMowersList().get(count);
+								displayMowers.addElement("[ Mower #: " + (count + 1) + " ]");
+								displayMowers.addElement(m.listDisplayString());
+								displayMowers.addElement("-----------------------------------------");
+							}
+						}
+
+						
+						/*stop user from pressing button after confirmation or 
+						cancellation until the make a change or press the add button */ 
+						confirmButton.setEnabled(false);
+						cancelButton.setEnabled(false);
+
+				}
+				
+			});
+			
+			cancelButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					confirmation.setText("Mower Deletion Canceled.");
+					confirmation.setForeground(Color.BLACK);
+					displayText.setText("");
+					
+					updateSaved = true;
+					
+					/*stop user from pressing button after confirmation or 
+					cancellation until the make a change or press the add button */ 
+					confirmButton.setEnabled(false);
+					cancelButton.setEnabled(false);
+				}
+				
+			});
+		}
+
+		// add panels to mainPanel
+		mainPanel.add(infoPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 10))); 
+		mainPanel.add(conPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 3)));
+		mainPanel.add(numPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 0)));
+		mainPanel.add(fieldPanel);
+		
+		
+		// Add panels to window
+		delPage.add(mainPanel);		
+		delPage.setLocationRelativeTo(null);
+		delPage.setVisible(true);
+	}
+
 	/*--------------------------------------------------------------------------------------------------------------------------------------------*/
 	// Add Mower Section
-
 	
-	// Starting page to add different mower types
+ // Starting page to add different mower types
 	
 	public void addMowerAction() {
 
@@ -362,7 +667,7 @@ public class WareHouseGUI {
 		greetings.setFont(new Font("SansSerif", Font.BOLD, 26));
 		greetings.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JLabel instructions = new JLabel("Please select the type of mower you would like to add to the warehouse:");
+		JLabel instructions = new JLabel("Select the type of mower you would like to add to the warehouse:");
 		instructions.setFont(new Font("SansSerif", Font.PLAIN, 16));
 		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -375,13 +680,13 @@ public class WareHouseGUI {
 		// Panel for displaying different mower buttons
 		JPanel mowersPanel = new JPanel();
 
-		JButton lawnTractorMower = new JButton("LawnTractor Mower");
+		JButton lawnTractorMower = new JButton("Lawn Tractor Mower");
 		lawnTractorMower.setFont(new Font("SansSerif",Font.PLAIN,15));
 		JButton commercialMower = new JButton("Commercial Mower");
 		commercialMower.setFont(new Font("SansSerif",Font.PLAIN,15));
-		JButton gasPoweredMower = new JButton("GasPowered Mower");
+		JButton gasPoweredMower = new JButton("Gas Powered Mower");
 		gasPoweredMower.setFont(new Font("SansSerif",Font.PLAIN,15));
-		JButton pushReelMower = new JButton("PushReel Mower");
+		JButton pushReelMower = new JButton("Push Reel Mower");
 		pushReelMower.setFont(new Font("SansSerif",Font.PLAIN,15));
 
 		// Add action listeners
@@ -409,11 +714,12 @@ public class WareHouseGUI {
 		addPage.setVisible(true);
 		
 	}
-
+	
+	// Adding mower type Push Reel to list of mowers in warehouse
 	public void addPushReelMowerAction(JFrame parentFrame) {
 		//Create page for Push Reel Mower
 		JDialog addFields = new JDialog(parentFrame, "Add Push Reel");
-		addFields.setSize(new Dimension(1100,700));
+		addFields.setSize(new Dimension(1300,700));
 		addFields.setResizable(false);
 		
 		
@@ -541,11 +847,12 @@ public class WareHouseGUI {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		
 		// Section for first input
-		JLabel label1 = new JLabel("Mower Manufacturer:");
+		JLabel label1 = new JLabel("Mower Manufacturer (Text):");
 		label1.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input1 = new JTextField();
 		input1.setPreferredSize(new Dimension(200, 35));
 		input1.setMaximumSize(input1.getPreferredSize());
+		input1.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input1.setEditable(true);
 
 		gbc.gridx = 0;
@@ -559,11 +866,12 @@ public class WareHouseGUI {
 		inputPanel.add(input1, gbc);
 
 		// Section for second input
-		JLabel label2 = new JLabel("Mower Year(Number):");
+		JLabel label2 = new JLabel("Mower Year (Whole Number):");
 		label2.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input2 = new JTextField();
 		input2.setPreferredSize(new Dimension(200, 35));
 		input2.setMaximumSize(input2.getPreferredSize());
+		input2.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input2.setEditable(true);
 
 		gbc.gridx = 0;
@@ -576,11 +884,12 @@ public class WareHouseGUI {
 		inputPanel.add(input2, gbc);
 
 		// Section for third input
-		JLabel label3 = new JLabel("Mower Serial Number:");
+		JLabel label3 = new JLabel("Mower Serial Number (Text):");
 		label3.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input3 = new JTextField();
 		input3.setPreferredSize(new Dimension(200, 35));
 		input3.setMaximumSize(input3.getPreferredSize());
+		input3.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input3.setEditable(true);
 
 		gbc.gridx = 0;
@@ -593,11 +902,12 @@ public class WareHouseGUI {
 		inputPanel.add(input3, gbc);
 
 		// Section for fourth input
-		JLabel label4 = new JLabel("Walk Behind Mower Cut Width(Number):");
+		JLabel label4 = new JLabel("Walk Behind Mower Cut Width (Whole or Decimal Number):");
 		label4.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input4 = new JTextField();
 		input4.setPreferredSize(new Dimension(200, 35));
 		input4.setMaximumSize(input4.getPreferredSize());
+		input4.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input4.setEditable(true);
 
 		gbc.gridx = 0;
@@ -610,11 +920,12 @@ public class WareHouseGUI {
 		inputPanel.add(input4, gbc);
 
 		// Section for fifth input
-		JLabel label5 = new JLabel("Walk Behind Mower Wheel Diameter(Number):");
+		JLabel label5 = new JLabel("Walk Behind Mower Wheel Diameter (Whole or Decimal Number):");
 		label5.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input5 = new JTextField();
 		input5.setPreferredSize(new Dimension(200, 35));
 		input5.setMaximumSize(input5.getPreferredSize());
+		input5.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input5.setEditable(true);
 
 		gbc.gridx = 0;
@@ -627,11 +938,12 @@ public class WareHouseGUI {
 		inputPanel.add(input5, gbc);
 
 		// Section for sixth input
-		JLabel label6 = new JLabel("Push Reel Mower Wheels(Number):");
+		JLabel label6 = new JLabel("Push Reel Mower Wheels (Whole Number):");
 		label6.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input6 = new JTextField();
 		input6.setPreferredSize(new Dimension(200, 35));
 		input6.setMaximumSize(input6.getPreferredSize());
+		input6.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input6.setEditable(true);
 
 		gbc.gridx = 0;
@@ -668,15 +980,15 @@ public class WareHouseGUI {
 				pr = new PushReelMower();
 				confirmation.setForeground(Color.BLACK);
 				
-				// if user types in something, set the value
+				// if user types in something, set the value.
 				// assume that empty input or white space will use default values
 				String in1Trim = input1.getText().strip();
 				if (in1Trim.isEmpty() == false) {
 					pr.setManufacturer(in1Trim);
 				}
 
-				// if user types in something, parse and set the value
-				// assume that empty input or white space will use default values
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will use default values.
 				String in2Trim = input2.getText().strip();
 				if (in2Trim.isEmpty() == false) {
 					// if the input is not 4 characters long
@@ -685,7 +997,7 @@ public class WareHouseGUI {
 						confirmation.setForeground(Color.RED);
 						return;
 					}
-					// if input is 4 characters long but those characters are not numbers
+					// if input is 4 characters long but those characters are not whole numbers
 					else {
 						try {
 							int i = Integer.parseInt(in2Trim);
@@ -698,17 +1010,15 @@ public class WareHouseGUI {
 					}
 				}
 
-				// if user types in something,set the value
-				// assume that empty input or white space will result in the use of default
-				// values
+				// if user types in something,set the value.
+				// assume that empty input or white space will result in the use of default values.
 				String in3Trim = input3.getText().strip();
 				if (in3Trim.isEmpty() == false) {
 					pr.setSerialNumber(in3Trim);
 				}
 
-				// if user types in something, parse and set the value
-				// assume that empty input or white space will result in the use of default
-				// values
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
 				String in4Trim = input4.getText().strip();
 				if (in4Trim.isEmpty() == false) {
 					try {
@@ -721,9 +1031,8 @@ public class WareHouseGUI {
 					}
 				}
 
-				// if user types in something, parse and set the value
-				// assume that empty input or white space will result in the use of default
-				// values
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
 				String in5Trim = input5.getText().strip();
 				if (in5Trim.isEmpty() == false) {
 					try {
@@ -736,16 +1045,15 @@ public class WareHouseGUI {
 					}
 				}
 
-				// if user types in something, parse and set the value
-				// assume that empty input or white space will result in the use of default
-				// values
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
 				String in6Trim = input6.getText().strip();
 				if (in6Trim.isEmpty() == false) {
 					try {
 						int i = Integer.parseInt(in6Trim);
 						pr.setNumWheels(i);
 					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for number of wheels.");
+						confirmation.setText("Please enter a valid whole number for wheels.");
 						confirmation.setForeground(Color.RED);
 						return;
 					}
@@ -755,10 +1063,7 @@ public class WareHouseGUI {
 				confirmation.setText("Please confirm your input.");
 				
 				
-				System.out.println("Printing after pressing add");
-				System.out.println(pr);
-				
-				/* Enable user to perform action for after pressing add */ 
+				/* Enable user to perform action after pressing add */ 
 				confirmButton.setEnabled(true);
 				cancelButton.setEnabled(true);		
 					
@@ -777,12 +1082,10 @@ public class WareHouseGUI {
 					updateSaved = false;
 					
 					/*stop user from pressing button after confirmation or 
-					cancellation until the make a change or press the add button */ 
+					cancellation until they make a change or press the add button */ 
 					confirmButton.setEnabled(false);
 					cancelButton.setEnabled(false);
-					
-					System.out.println("Printing from inside confirm action");
-					System.out.println(pr);
+
 					pr = null;
 			    
 
@@ -800,14 +1103,11 @@ public class WareHouseGUI {
 				
 				updateSaved = true;
 				
-				//pr = new PushReelMower();
 				/*stop user from pressing button after confirmation or 
-				cancellation until the make a change or press the add button */ 
+				cancellation until they make a change or press the add button */ 
 				confirmButton.setEnabled(false);
 				cancelButton.setEnabled(false);
-				
-				System.out.println("Printing from inside the cancel button");
-				System.out.println(pr);
+
 				pr = null;
 			}
 			
@@ -828,611 +1128,1024 @@ public class WareHouseGUI {
 	}
 
 	// Adding mower type Gas Powered to list of mowers in warehouse
+	
+	// Adding mower type Gas Powered to list of mowers in warehouse
 	public void addGasPoweredMowerAction(JFrame parentFrame) {
 
 		JDialog addFields = new JDialog(parentFrame, "Add Gas Powered Mower");
-		addFields.setPreferredSize(new Dimension(790, 550));
+		addFields.setSize(new Dimension(1250, 800));
 		addFields.setResizable(false);
 
+		// Panels for Gas Powered Mower Page
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-		mainPanel.setBorder(new EmptyBorder(150, 20, 20, 20));
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel.setBorder(new EmptyBorder(90, 10, 20, 10));
 
+		// Information Panel and its components
+		// Panel for page information and greetings
 		JPanel infoPanel = new JPanel();
 
-		JLabel instructions = new JLabel("Fill in all fields and then press add when done.");
-		instructions.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JLabel instruc1 = new JLabel("Enter all input for the new Gas Powered Mower or predetermined input will be used.");
+		instruc1.setFont(new Font("SansSerif",Font.BOLD,18));
+		instruc1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		JLabel instruc2 = new JLabel("The right side will show submission details for confirmation.");
+		instruc2.setFont(new Font("SansSerif",Font.PLAIN,16));
+		instruc2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		JLabel instruc3 = new JLabel("Press confirm if you are satisfied.");
+		instruc3.setFont(new Font("SansSerif",Font.BOLD,16));
+		instruc3.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		infoPanel.add(instruc1);
+		infoPanel.add(instruc2);
+		infoPanel.add(instruc3);
+		infoPanel.setLayout(new BoxLayout(infoPanel,BoxLayout.Y_AXIS));
+		infoPanel.setMaximumSize(infoPanel.getPreferredSize());
 
-		JLabel note = new JLabel("If all fields are not filled in, it will be filled with predetermined data.");
-		note.setFont(new Font("SansSerif", Font.BOLD, 14));
-		note.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		infoPanel.add(instructions);
-		infoPanel.add(note);
-		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
-
+		
+		// Confirmation Panel and its components
 		// Panel for confirmation of adding mower
-
-		JPanel conPanel = new JPanel(); // Panel for saving confirmation
+		JPanel conPanel = new JPanel();
+		
 		JLabel confirmation = new JLabel("");
-		confirmation.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		confirmation.setFont(new Font("SansSerif", Font.PLAIN, 16));
 		confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		conPanel.add(confirmation);
-		conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.PAGE_AXIS));
+		conPanel.setPreferredSize(new Dimension(400,50));
+		conPanel.setMaximumSize(conPanel.getPreferredSize());
 
-		// Panel for input fields
+		// Field Panel and its components
+		// Panel for input 
 		JPanel fieldPanel = new JPanel();
-		fieldPanel.setLayout(new GridBagLayout());
+		fieldPanel.setLayout(new BoxLayout(fieldPanel,BoxLayout.X_AXIS));
+		fieldPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		// Inner Panels for fieldPanel
+		// Panel for input fields
+		JPanel inputPanel = new JPanel();
+		inputPanel.setPreferredSize(new Dimension(800,550));
+		inputPanel.setMaximumSize(inputPanel.getPreferredSize());
+		TitledBorder inputTitle = BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
+				"Input",
+				TitledBorder.LEFT,
+				TitledBorder.ABOVE_TOP,
+				new Font("SansSerif",Font.PLAIN,15),
+				Color.BLACK
+				);
+		inputPanel.setBorder(inputTitle);
+		
+		// Panel for Display
+		// Displays what the user set as input to confirm if the input was correct
+		JPanel displayPanel = new JPanel();
+		displayPanel.setPreferredSize(new Dimension(500,350));
+		displayPanel.setMaximumSize(displayPanel.getPreferredSize());
+		displayPanel.setLayout(new BoxLayout(displayPanel,BoxLayout.Y_AXIS));
+		TitledBorder displayTitle = BorderFactory.createTitledBorder(
+				BorderFactory.createEmptyBorder(), 
+				"Input Confirmation",
+				TitledBorder.LEFT, 
+				TitledBorder.ABOVE_TOP,
+				new Font("SanSerif",Font.PLAIN,15),
+				Color.BLACK
+				);
+		displayPanel.setBorder(displayTitle);
+		
+		JTextArea displayText = new JTextArea();
+		displayText.setMaximumSize(displayText.getPreferredSize());
+		displayText.setFont(new Font("SansSerif",Font.PLAIN,15));
+		displayText.setEditable(false);
+		
+		JScrollPane displayScroll = new JScrollPane(displayText);
+		displayScroll.setPreferredSize(new Dimension(300,300));
+		
+		// Panel for confirmation buttons
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
+		
+		JButton confirmButton = new JButton("Confirm Input");
+		confirmButton.setPreferredSize(new Dimension(150,40));
+		confirmButton.setMaximumSize(confirmButton.getPreferredSize());
+		confirmButton.setFont(new Font("SansSerif",Font.PLAIN,15));
+		confirmButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setPreferredSize(new Dimension(150,40));
+		cancelButton.setMaximumSize(cancelButton.getPreferredSize());
+		cancelButton.setFont(new Font("SansSerif",Font.PLAIN,15));
+		cancelButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		
+		/*Stop user from pressing button until they press Add Mower*/
+		confirmButton.setEnabled(false);
+		cancelButton.setEnabled(false);
+		
+		buttonPanel.add(confirmButton);
+		buttonPanel.add(Box.createRigidArea(new Dimension(20, 0)));
+		buttonPanel.add(cancelButton);
+		
+		displayPanel.add(displayScroll);
+		displayPanel.add(buttonPanel);
+		
+		
+		//Styling for inputPanel input fields
+		inputPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
-		gbc.insets = new Insets(5, 5, 5, 5);
-
+		gbc.insets = new Insets(4, 4, 4, 4);
 		gbc.anchor = GridBagConstraints.EAST;
-
-		// Panel for first input
-
-		JLabel label1 = new JLabel("Mower Manufacturer(String):");
-		label1.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		
+		// Section for first input
+		JLabel label1 = new JLabel("Mower Manufacturer (Text):");
+		label1.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input1 = new JTextField();
-		input1.setPreferredSize(new Dimension(200, 20));
+		input1.setPreferredSize(new Dimension(200, 40));
 		input1.setMaximumSize(input1.getPreferredSize());
+		input1.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input1.setEditable(true);
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label1, gbc);
+		inputPanel.add(label1, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		fieldPanel.add(input1, gbc);
+		gbc.weightx = 1;
+		inputPanel.add(input1, gbc);
 
-		// Panel for second input
-		JLabel label2 = new JLabel("Mower Year(Integer):");
-		label2.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		// Section for second input
+		JLabel label2 = new JLabel("Mower Year (Whole Number):");
+		label2.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input2 = new JTextField();
-		input2.setPreferredSize(new Dimension(200, 20));
+		input2.setPreferredSize(new Dimension(200, 40));
 		input2.setMaximumSize(input2.getPreferredSize());
+		input2.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input2.setEditable(true);
 
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label2, gbc);
+		inputPanel.add(label2, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		fieldPanel.add(input2, gbc);
+		inputPanel.add(input2, gbc);
 
-		// Panel for third input
-		JLabel label3 = new JLabel("Mower Serial Number(String):");
-		label3.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		// Section for third input
+		JLabel label3 = new JLabel("Mower Serial Number (Text):");
+		label3.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input3 = new JTextField();
-		input3.setPreferredSize(new Dimension(200, 20));
+		input3.setPreferredSize(new Dimension(200, 40));
 		input3.setMaximumSize(input3.getPreferredSize());
+		input3.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input3.setEditable(true);
 
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label3, gbc);
+		inputPanel.add(label3, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		fieldPanel.add(input3, gbc);
+		inputPanel.add(input3, gbc);
 
-		// Panel for fourth input
-
-		JLabel label4 = new JLabel("Walk Behind Mower Cut Width(Double):");
-		label4.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		// Section for fourth input
+		JLabel label4 = new JLabel("Walk Behind Mower Cut Width (Whole or Decimal Number):");
+		label4.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input4 = new JTextField();
-		input4.setPreferredSize(new Dimension(200, 20));
+		input4.setPreferredSize(new Dimension(200, 40));
 		input4.setMaximumSize(input4.getPreferredSize());
+		input4.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input4.setEditable(true);
 
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label4, gbc);
+		inputPanel.add(label4, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		fieldPanel.add(input4, gbc);
+		inputPanel.add(input4, gbc);
 
-		// Panel for fifth input
-		JLabel label5 = new JLabel("Walk Behind Mower Wheel Diameter(Double):");
-		label5.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		// Section for fifth input
+		JLabel label5 = new JLabel("Walk Behind Mower Wheel Diameter (Whole or Decimal Number):");
+		label5.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input5 = new JTextField();
-		input5.setPreferredSize(new Dimension(200, 20));
+		input5.setPreferredSize(new Dimension(200, 40));
 		input5.setMaximumSize(input5.getPreferredSize());
+		input5.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input5.setEditable(true);
 
 		gbc.gridx = 0;
 		gbc.gridy = 4;
 		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label5, gbc);
+		inputPanel.add(label5, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 4;
-		fieldPanel.add(input5, gbc);
+		inputPanel.add(input5, gbc);
 
 		// Panel for sixth input
-		JLabel label6 = new JLabel("Engine Manufacturer(String):");
-		label6.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		JLabel label6 = new JLabel("Engine Manufacturer (Text):");
+		label6.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input6 = new JTextField();
-		input6.setPreferredSize(new Dimension(200, 20));
+		input6.setPreferredSize(new Dimension(200, 40));
 		input6.setMaximumSize(input6.getPreferredSize());
+		input6.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input6.setEditable(true);
 
 		gbc.gridx = 0;
 		gbc.gridy = 5;
 		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label6, gbc);
+		inputPanel.add(label6, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 5;
-		fieldPanel.add(input6, gbc);
+		inputPanel.add(input6, gbc);
 
 		// Panel for seventh input
-		JLabel label7 = new JLabel("Engine HorsePower(Double):");
-		label7.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		JLabel label7 = new JLabel("Engine Horsepower (Whole or Decimal Number):");
+		label7.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input7 = new JTextField();
-		input7.setPreferredSize(new Dimension(200, 20));
+		input7.setPreferredSize(new Dimension(200, 40));
 		input7.setMaximumSize(input7.getPreferredSize());
+		input7.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input7.setEditable(true);
 
 		gbc.gridx = 0;
 		gbc.gridy = 6;
 		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label7, gbc);
+		inputPanel.add(label7, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 6;
-		fieldPanel.add(input7, gbc);
+		inputPanel.add(input7, gbc);
 
 		// Panel for eighth input
-		JLabel label8 = new JLabel("Engine Cylinders(Integer):");
-		label8.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		JLabel label8 = new JLabel("Engine Cylinders (Whole Number):");
+		label8.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input8 = new JTextField();
-		input8.setPreferredSize(new Dimension(200, 20));
+		input8.setPreferredSize(new Dimension(200, 40));
 		input8.setMaximumSize(input8.getPreferredSize());
+		input8.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input8.setEditable(true);
 
 		gbc.gridx = 0;
 		gbc.gridy = 7;
 		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label8, gbc);
+		inputPanel.add(label8, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 7;
-		fieldPanel.add(input8, gbc);
-
-		// Panel for seventh input
-		JLabel label9 = new JLabel("Is it Self Propelled?:");
-		label9.setFont(new Font("SansSerif", Font.PLAIN, 13));
-
+		inputPanel.add(input8, gbc);
+		
+		// Panel for ninth input
+		JLabel label9 = new JLabel("Is It Self Propelled?:");
+		label9.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		
 		String[] options = { "Select", "True", "False" };
-
 		JComboBox<?> input9 = new JComboBox<Object>(options);
 		input9.setSelectedIndex(0);
-		input9.setPreferredSize(new Dimension(200, 20));
+		input9.setPreferredSize(new Dimension(200, 40));
 		input9.setMaximumSize(input9.getPreferredSize());
-
+		input9.setFont(new Font("SansSerif",Font.PLAIN,15));
+		
 		gbc.gridx = 0;
 		gbc.gridy = 8;
 		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label9, gbc);
+		inputPanel.add(label9, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 8;
-		fieldPanel.add(input9, gbc);
+		inputPanel.add(input9, gbc);
 
 		JButton addMower = new JButton("Add Gas Powered Mower");
+		addMower.setFont(new Font("SansSerif", Font.PLAIN,15));
+		addMower.setPreferredSize(new Dimension(250, 40));
+		addMower.setMaximumSize(addMower.getPreferredSize());
+		
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.anchor = GridBagConstraints.WEST;
+		
+		gbc.gridx = 0;
 		gbc.gridy = 9;
-		fieldPanel.add(addMower, gbc);
+		inputPanel.add(addMower, gbc);
+		
+		// add panels to fieldPanel
+		fieldPanel.add(inputPanel);
+		fieldPanel.add(displayPanel);
 
 		// Action to save Gas Powered mower
 		addMower.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GasPoweredMower gp = new GasPoweredMower();
-				Engine ge = new Engine();
-				if (input1.getText().isBlank() != true) {
-					gp.setManufacturer(input1.getText());
+				gp = new GasPoweredMower();
+				ge = new Engine();
+				
+				confirmation.setForeground(Color.BLACK);
+				
+				// if user types in something, set the value.
+				// assume that empty input or white space will use default values.
+				String in1Trim = input1.getText().strip();
+				if (in1Trim.isEmpty() == false) {
+					gp.setManufacturer(in1Trim);
 				}
-				if (input2.getText().isBlank() != true) {
-					try {
-						int i = Integer.parseInt(input2.getText());
-						gp.setYear(i);
-					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for year");
+				
+				
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will use default values.
+				String in2Trim = input2.getText().strip();
+				if (in2Trim.isEmpty() == false) {
+					// if the input is not 4 characters long
+					if (in2Trim.length() != 4) {
+						confirmation.setText("Please enter a 4 digit year.");
+						confirmation.setForeground(Color.RED);
 						return;
 					}
-				}
-				if (input3.getText().isBlank() != true) {
-					gp.setSerialNumber(input3.getText());
-				}
-				if (input4.getText().isBlank() != true) {
-					try {
-						double i = Double.parseDouble(input4.getText());
-						gp.setCutWidth(i);
-					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for cut width");
-						return;
-					}
-				}
-				if (input5.getText().isBlank() != true) {
-					try {
-						double i = Double.parseDouble(input5.getText());
-						gp.setWheelDiameter(i);
-					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for wheel diameter");
-						return;
-					}
-				}
-				if (input6.getText().isBlank() != true) {
-					ge.setManufacturer(input6.getText());
-				}
-				if (input7.getText().isBlank() != true) {
-					try {
-						int i = Integer.parseInt(input7.getText());
-						ge.setHorsePower(i);
-					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for horse power");
-						return;
-					}
-				}
-				if (input8.getText().isBlank() != true) {
-					try {
-						int i = Integer.parseInt(input8.getText());
-						ge.setCylinders(i);
-					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for cylinders");
-						return;
+					// if input is 4 characters long but those characters are not numbers
+					else {
+						try {
+							int i = Integer.parseInt(in2Trim);
+							gp.setYear(i);
+						} catch (NumberFormatException nfe) {
+							confirmation.setText("Please enter a valid number for mower year.");
+							confirmation.setForeground(Color.RED);
+							return;
+						}
 					}
 				}
 
+				
+				// if user types in something, set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in3Trim = input3.getText().strip();
+				if (in3Trim.isEmpty() == false) {
+					gp.setSerialNumber(in3Trim);
+				}
+				
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in4Trim = input4.getText().strip();
+				if (in4Trim.isEmpty() == false) {
+					try {
+						double i = Double.parseDouble(in4Trim);
+						gp.setCutWidth(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for cut width.");
+						confirmation.setForeground(Color.RED);
+						return;
+					}
+				}
+				
+				
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in5Trim = input5.getText().strip();
+				if (in5Trim.isEmpty() == false) {
+					try {
+						double i = Double.parseDouble(in5Trim);
+						gp.setWheelDiameter(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for wheel diameter.");
+						confirmation.setForeground(Color.RED);
+						return;
+					}
+				}
+				
+				// if user types in something, set the value.
+				// assume that empty input or white space will use default values.
+				String in6Trim = input6.getText().strip();
+				if (in6Trim.isEmpty() == false) {
+					ge.setManufacturer(in6Trim);
+				}
+				
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in7Trim = input7.getText().strip();
+				if (in7Trim.isEmpty() == false) {
+					try {
+						double i = Double.parseDouble(in7Trim);
+						ge.setHorsePower(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid number for horse power.");
+						confirmation.setForeground(Color.RED);
+						return;
+					}
+				}
+				
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in8Trim = input8.getText().strip();
+				if (in8Trim.isEmpty() == false) {
+					try {
+						int i = Integer.parseInt(in8Trim);
+						ge.setCylinders(i);
+					} catch (NumberFormatException nfe) {
+						confirmation.setText("Please enter a valid whole number for cylinders.");
+						confirmation.setForeground(Color.RED);
+						return;
+					}
+				}
+				
+				// if user selects something, save it.
+				// assume that not selecting will result in use of default values.
 				String selectedItem = (String) input9.getSelectedItem();
 				if ("True".equals(selectedItem)) {
 					gp.setSelfPropelled(true);
 				} else if ("False".equals(selectedItem)) {
 					gp.setSelfPropelled(false);
 				}
-
+				
 				gp.setEngine(ge);
-				wareHouse.addMower(gp);
-				confirmation.setText("Mower Added!");
-				updateSaved = false;
-			}
+				
+				displayText.setText(gp.confirmString());
+				confirmation.setText("Please confirm your input.");
+				
+				/* Enable user to perform action after pressing add */ 
+				confirmButton.setEnabled(true);
+				cancelButton.setEnabled(true);	
 
+			}
+		});
+		
+		confirmButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					wareHouse.addMower(gp);
+					confirmation.setText("Mower Added!");
+					confirmation.setForeground(new Color(18, 112, 32));
+					displayText.setText("");
+					updateSaved = false;
+					
+					/*stop user from pressing button after confirmation or 
+					cancellation until they make a change or press the add button */ 
+					confirmButton.setEnabled(false);
+					cancelButton.setEnabled(false);
+
+					gp = null;
+					ge = null;
+			}
+		});
+		
+		cancelButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				confirmation.setText("Mower Addition Canceled.");
+				confirmation.setForeground(Color.BLACK);
+				displayText.setText("");
+				
+				updateSaved = true;
+				
+				/*stop user from pressing button after confirmation or 
+				cancellation until they make a change or press the add button */ 
+				confirmButton.setEnabled(false);
+				cancelButton.setEnabled(false);
+
+				gp = null;
+				ge = null;
+			}	
 		});
 
+		// add panels to mainPanel
 		mainPanel.add(infoPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 10))); 
 		mainPanel.add(conPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 0))); 
 		mainPanel.add(fieldPanel);
-
+		
+		// Add panels to window
 		addFields.add(mainPanel);
-		addFields.pack();
+		addFields.setLocationRelativeTo(null);
 		addFields.setVisible(true);
-
 	}
-
+	
+	
+	// Adding mower type Commercial to list of mowers in warehouse
 	// Adding mower type Commercial to list of mowers in warehouse
 	public void addCommercialMowerAction(JFrame parentFrame) {
 
 		JDialog addFields = new JDialog(parentFrame, "Add Commercial Mower");
-		addFields.setPreferredSize(new Dimension(790, 600));
+		addFields.setSize(new Dimension(1300, 800));
 		addFields.setResizable(false);
-
+		
+		// Panels for Commercial Mower
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-		mainPanel.setBorder(new EmptyBorder(150, 20, 20, 20));
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel.setBorder(new EmptyBorder(80, 10, 10, 10));
 
-		// Panel for page information
+		// Information Panel and its components
+		// Panel for page information and greetings
 		JPanel infoPanel = new JPanel();
 
-		JLabel instructions = new JLabel("Fill in all fields and then press add when done.");
-		instructions.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JLabel instruc1 = new JLabel("Enter all input for the new Commercial Mower or predetermined input will be used.");
+		instruc1.setFont(new Font("SansSerif",Font.BOLD,18));
+		instruc1.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JLabel note = new JLabel("If all fields are not filled in, it will be filled with predetermined data.");
-		note.setFont(new Font("SansSerif", Font.BOLD, 14));
-		note.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JLabel instruc2 = new JLabel("The right side will show submission details for confirmation.");
+		instruc2.setFont(new Font("SansSerif",Font.PLAIN,16));
+		instruc2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		JLabel instruc3 = new JLabel("Press confirm if you are satisfied.");
+		instruc3.setFont(new Font("SansSerif",Font.BOLD,16));
+		instruc3.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		infoPanel.add(instruc1);
+		infoPanel.add(instruc2);
+		infoPanel.add(instruc3);
+		infoPanel.setLayout(new BoxLayout(infoPanel,BoxLayout.Y_AXIS));
+		infoPanel.setMaximumSize(infoPanel.getPreferredSize());
 
-		infoPanel.add(instructions);
-		infoPanel.add(note);
-		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
-
+		// Confirmation Panel and its components
 		// Panel for confirmation of adding mower
+		JPanel conPanel = new JPanel();
 
-		JPanel conPanel = new JPanel(); // Panel for saving confirmation
 		JLabel confirmation = new JLabel("");
-		confirmation.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		confirmation.setFont(new Font("SansSerif", Font.PLAIN, 16));
 		confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		conPanel.add(confirmation);
-		conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.PAGE_AXIS));
+		conPanel.setPreferredSize(new Dimension(400,50));
+		conPanel.setMaximumSize(conPanel.getPreferredSize());
+		
+		// Field Panel and its components
+				// Panel for input 
+				JPanel fieldPanel = new JPanel();
+				fieldPanel.setLayout(new BoxLayout(fieldPanel,BoxLayout.X_AXIS));
+				fieldPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+				
+				// Inner Panels for fieldPanel
+				// Panel for input fields
+				JPanel inputPanel = new JPanel();
+				inputPanel.setPreferredSize(new Dimension(800,600));
+				inputPanel.setMaximumSize(inputPanel.getPreferredSize());
+				TitledBorder inputTitle = BorderFactory.createTitledBorder(
+						BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
+						"Input",
+						TitledBorder.LEFT,
+						TitledBorder.ABOVE_TOP,
+						new Font("SansSerif",Font.PLAIN,15),
+						Color.BLACK
+						);
+				inputPanel.setBorder(inputTitle);
+				
+				// Panel for Display
+				// Displays what the user set as input to confirm if the input was correct
+				JPanel displayPanel = new JPanel();
+				displayPanel.setPreferredSize(new Dimension(500,350));
+				displayPanel.setMaximumSize(displayPanel.getPreferredSize());
+				displayPanel.setLayout(new BoxLayout(displayPanel,BoxLayout.Y_AXIS));
+				TitledBorder displayTitle = BorderFactory.createTitledBorder(
+						BorderFactory.createEmptyBorder(), 
+						"Input Confirmation",
+						TitledBorder.LEFT, 
+						TitledBorder.ABOVE_TOP,
+						new Font("SanSerif",Font.PLAIN,15),
+						Color.BLACK
+						);
+				displayPanel.setBorder(displayTitle);
+				
+				JTextArea displayText = new JTextArea();
+				displayText.setMaximumSize(displayText.getPreferredSize());
+				displayText.setFont(new Font("SansSerif",Font.PLAIN,15));
+				displayText.setEditable(false);
+				
+				JScrollPane displayScroll = new JScrollPane(displayText);
+				displayScroll.setPreferredSize(new Dimension(300,300));
+				
+				// Panel for confirmation buttons
+				JPanel buttonPanel = new JPanel();
+				buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
+				
+				JButton confirmButton = new JButton("Confirm Input");
+				confirmButton.setPreferredSize(new Dimension(150,40));
+				confirmButton.setMaximumSize(confirmButton.getPreferredSize());
+				confirmButton.setFont(new Font("SansSerif",Font.PLAIN,15));
+				confirmButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+				
+				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setPreferredSize(new Dimension(150,40));
+				cancelButton.setMaximumSize(cancelButton.getPreferredSize());
+				cancelButton.setFont(new Font("SansSerif",Font.PLAIN,15));
+				cancelButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+				
+				/*Stop user from pressing button until they press Add Mower*/
+				confirmButton.setEnabled(false);
+				cancelButton.setEnabled(false);
+				
+				buttonPanel.add(confirmButton);
+				buttonPanel.add(Box.createRigidArea(new Dimension(20, 0)));
+				buttonPanel.add(cancelButton);
+				
+				displayPanel.add(displayScroll);
+				displayPanel.add(buttonPanel);
 
-		// Panel for input fields
-		JPanel fieldPanel = new JPanel();
-		fieldPanel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
+				//Styling for inputPanel input fields
+				inputPanel.setLayout(new GridBagLayout());
+				GridBagConstraints gbc = new GridBagConstraints();
 
-		gbc.insets = new Insets(5, 5, 5, 5);
+				gbc.insets = new Insets(4, 4, 4, 4);
+				gbc.anchor = GridBagConstraints.EAST;
+				gbc.fill = GridBagConstraints.HORIZONTAL;
+				
+				// Section for first input
+				JLabel label1 = new JLabel("Mower Manufacturer (Text):");
+				label1.setFont(new Font("SansSerif", Font.PLAIN, 15));
+				JTextField input1 = new JTextField();
+				input1.setPreferredSize(new Dimension(200, 40));
+				input1.setMaximumSize(input1.getPreferredSize());
+				input1.setFont(new Font("SansSerif",Font.PLAIN,15));
+				input1.setEditable(true);
+				
+				gbc.gridx = 0;
+				gbc.gridy = 0;
+				gbc.anchor = GridBagConstraints.WEST;
+				inputPanel.add(label1, gbc);
 
-		gbc.anchor = GridBagConstraints.EAST;
+				gbc.gridx = 1;
+				gbc.gridy = 0;
+				gbc.weightx = 1;
+				inputPanel.add(input1, gbc);
 
-		// Panel for first input
 
-		JLabel label1 = new JLabel("Mower Manufacturer(String):");
-		label1.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		JTextField input1 = new JTextField();
-		input1.setPreferredSize(new Dimension(200, 20));
-		input1.setMaximumSize(input1.getPreferredSize());
-		input1.setEditable(true);
+				// Section for second input
+				JLabel label2 = new JLabel("Mower Year (Whole Number):");
+				label2.setFont(new Font("SansSerif", Font.PLAIN, 15));
+				JTextField input2 = new JTextField();
+				input2.setPreferredSize(new Dimension(200, 40));
+				input2.setMaximumSize(input2.getPreferredSize());
+				input2.setFont(new Font("SansSerif",Font.PLAIN,15));
+				input2.setEditable(true);
 
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label1, gbc);
+				gbc.gridx = 0;
+				gbc.gridy = 1;
+				gbc.anchor = GridBagConstraints.WEST;
+				inputPanel.add(label2, gbc);
 
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		fieldPanel.add(input1, gbc);
+				gbc.gridx = 1;
+				gbc.gridy = 1;
+				inputPanel.add(input2, gbc);
 
-		// Panel for second input
-		JLabel label2 = new JLabel("Mower Year(Integer):");
-		label2.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		JTextField input2 = new JTextField();
-		input2.setPreferredSize(new Dimension(200, 20));
-		input2.setMaximumSize(input2.getPreferredSize());
-		input2.setEditable(true);
+				// Section for third input
+				JLabel label3 = new JLabel("Mower Serial Number (Text):");
+				label3.setFont(new Font("SansSerif", Font.PLAIN, 15));
+				JTextField input3 = new JTextField();
+				input3.setPreferredSize(new Dimension(200, 40));
+				input3.setMaximumSize(input3.getPreferredSize());
+				input3.setFont(new Font("SansSerif",Font.PLAIN,15));
+				input3.setEditable(true);
 
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label2, gbc);
+				gbc.gridx = 0;
+				gbc.gridy = 2;
+				gbc.anchor = GridBagConstraints.WEST;
+				inputPanel.add(label3, gbc);
 
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		fieldPanel.add(input2, gbc);
+				gbc.gridx = 1;
+				gbc.gridy = 2;
+				inputPanel.add(input3, gbc);
+				
+				// Section for fourth input
+				JLabel label4 = new JLabel("Engine Manufacturer (Text):");
+				label4.setFont(new Font("SansSerif", Font.PLAIN, 15));
+				JTextField input4 = new JTextField();
+				input4.setPreferredSize(new Dimension(200, 40));
+				input4.setMaximumSize(input4.getPreferredSize());
+				input4.setFont(new Font("SansSerif",Font.PLAIN,15));
+				input4.setEditable(true);
 
-		// Panel for third input
-		JLabel label3 = new JLabel("Mower Serial Number(String):");
-		label3.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		JTextField input3 = new JTextField();
-		input3.setPreferredSize(new Dimension(200, 20));
-		input3.setMaximumSize(input3.getPreferredSize());
-		input3.setEditable(true);
+				gbc.gridx = 0;
+				gbc.gridy = 3;
+				gbc.anchor = GridBagConstraints.WEST;
+				inputPanel.add(label4, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label3, gbc);
+				gbc.gridx = 1;
+				gbc.gridy = 3;
+				inputPanel.add(input4, gbc);
+				
+				// Section for fifth input
+				JLabel label5 = new JLabel("Engine Horse Power (Whole or Decimal Number):");
+				label5.setFont(new Font("SansSerif", Font.PLAIN, 15));
+				JTextField input5 = new JTextField();
+				input5.setPreferredSize(new Dimension(200, 40));
+				input5.setMaximumSize(input5.getPreferredSize());
+				input5.setFont(new Font("SansSerif",Font.PLAIN,15));
+				input5.setEditable(true);
 
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		fieldPanel.add(input3, gbc);
+				gbc.gridx = 0;
+				gbc.gridy = 4;
+				gbc.anchor = GridBagConstraints.WEST;
+				inputPanel.add(label5, gbc);
 
-		// Panel for fourth input
-		JLabel label4 = new JLabel("Engine Manufacturer(String):");
-		label4.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		JTextField input4 = new JTextField();
-		input4.setPreferredSize(new Dimension(200, 20));
-		input4.setMaximumSize(input4.getPreferredSize());
-		input4.setEditable(true);
+				gbc.gridx = 1;
+				gbc.gridy = 4;
+				inputPanel.add(input5, gbc);
+				
+				// Panel for sixth input
+				JLabel label6 = new JLabel("Engine Cylinders (Whole Number):");
+				label6.setFont(new Font("SansSerif", Font.PLAIN, 15));
+				JTextField input6 = new JTextField();
+				input6.setPreferredSize(new Dimension(200, 40));
+				input6.setMaximumSize(input6.getPreferredSize());
+				input6.setFont(new Font("SansSerif",Font.PLAIN,15));
+				input6.setEditable(true);
 
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label4, gbc);
+				gbc.gridx = 0;
+				gbc.gridy = 5;
+				gbc.anchor = GridBagConstraints.WEST;
+				inputPanel.add(label6, gbc);
 
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-		fieldPanel.add(input4, gbc);
+				gbc.gridx = 1;
+				gbc.gridy = 5;
+				inputPanel.add(input6, gbc);
+				
+				// Panel for seventh input
+				JLabel label7 = new JLabel("Lawn Tractor Model (Text):");
+				label7.setFont(new Font("SansSerif", Font.PLAIN, 15));
+				JTextField input7 = new JTextField();
+				input7.setPreferredSize(new Dimension(200, 40));
+				input7.setMaximumSize(input7.getPreferredSize());
+				input7.setFont(new Font("SansSerif",Font.PLAIN,15));
+				input7.setEditable(true);
 
-		// Panel for fifth input
-		JLabel label5 = new JLabel("Engine HorsePower(Double):");
-		label5.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		JTextField input5 = new JTextField();
-		input5.setPreferredSize(new Dimension(200, 20));
-		input5.setMaximumSize(input5.getPreferredSize());
-		input5.setEditable(true);
+				gbc.gridx = 0;
+				gbc.gridy = 6;
+				gbc.anchor = GridBagConstraints.WEST;
+				inputPanel.add(label7, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label5, gbc);
+				gbc.gridx = 1;
+				gbc.gridy = 6;
+				inputPanel.add(input7, gbc);
+				
+				// Panel for eighth input
+				JLabel label8 = new JLabel("Lawn Tractor Deck Width (Whole or Decimal Number):");
+				label8.setFont(new Font("SansSerif", Font.PLAIN, 15));
+				JTextField input8 = new JTextField();
+				input8.setPreferredSize(new Dimension(200, 40));
+				input8.setMaximumSize(input8.getPreferredSize());
+				input8.setFont(new Font("SansSerif",Font.PLAIN,15));
+				input8.setEditable(true);
 
-		gbc.gridx = 1;
-		gbc.gridy = 4;
-		fieldPanel.add(input5, gbc);
+				gbc.gridx = 0;
+				gbc.gridy = 7;
+				gbc.anchor = GridBagConstraints.WEST;
+				inputPanel.add(label8, gbc);
 
-		// Panel for sixth input
-		JLabel label6 = new JLabel("Engine Cylinders(Integer):");
-		label6.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		JTextField input6 = new JTextField();
-		input6.setPreferredSize(new Dimension(200, 20));
-		input6.setMaximumSize(input6.getPreferredSize());
-		input6.setEditable(true);
+				gbc.gridx = 1;
+				gbc.gridy = 7;
+				inputPanel.add(input8, gbc);
+				
+				// Panel for ninth input
+				JLabel label9 = new JLabel("Operating Hours (Whole or Decimal Number):");
+				label9.setFont(new Font("SansSerif", Font.PLAIN, 15));
+				JTextField input9 = new JTextField();
+				input9.setPreferredSize(new Dimension(200, 40));
+				input9.setMaximumSize(input9.getPreferredSize());
+				input9.setFont(new Font("SansSerif",Font.PLAIN,15));
+				input9.setEditable(true);
 
-		gbc.gridx = 0;
-		gbc.gridy = 5;
-		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label6, gbc);
+				gbc.gridx = 0;
+				gbc.gridy = 8;
+				gbc.anchor = GridBagConstraints.WEST;
+				inputPanel.add(label9, gbc);
 
-		gbc.gridx = 1;
-		gbc.gridy = 5;
-		fieldPanel.add(input6, gbc);
+				gbc.gridx = 1;
+				gbc.gridy = 8;
+				inputPanel.add(input9, gbc);
+				
+				// Panel for tenth input
+				JLabel label10 = new JLabel("Is Zero Turn Radius?:");
+				label10.setFont(new Font("SansSerif", Font.PLAIN, 15));
+				
+				String[] options = { "Select", "True", "False" };
+				JComboBox<?> input10 = new JComboBox<Object>(options);
+				input10.setSelectedIndex(0);
+				input10.setPreferredSize(new Dimension(200, 40));
+				input10.setMaximumSize(input10.getPreferredSize());
+				input10.setFont(new Font("SansSerif",Font.PLAIN,15));
+				
+				gbc.gridx = 0;
+				gbc.gridy = 9;
+				gbc.anchor = GridBagConstraints.WEST;
+				inputPanel.add(label10, gbc);
 
-		// Panel for seventh input
-		JLabel label7 = new JLabel("Lawn Tractor Model(String)");
-		label7.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		JTextField input7 = new JTextField();
-		input7.setPreferredSize(new Dimension(200, 20));
-		input7.setMaximumSize(input7.getPreferredSize());
-		input7.setEditable(true);
+				gbc.gridx = 1;
+				gbc.gridy = 9;
+				inputPanel.add(input10, gbc);
+				
+				JButton addMower = new JButton("Add Commercial Mower");
+				addMower.setFont(new Font("SansSerif", Font.PLAIN,15));
+				addMower.setPreferredSize(new Dimension(250, 40));
+				addMower.setMaximumSize(addMower.getPreferredSize());
+				
+				gbc.fill = GridBagConstraints.NONE;
+				gbc.anchor = GridBagConstraints.WEST;
+				
+				gbc.gridx = 0;
+				gbc.gridy = 10;
+				inputPanel.add(addMower, gbc);
+				
+				// add panels to fieldPanel
+				fieldPanel.add(inputPanel);
+				fieldPanel.add(displayPanel);
+				
 
-		gbc.gridx = 0;
-		gbc.gridy = 6;
-		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label7, gbc);
-
-		gbc.gridx = 1;
-		gbc.gridy = 6;
-		fieldPanel.add(input7, gbc);
-
-		// Panel for eigth input
-		JLabel label8 = new JLabel("Lawn Tractor Deck Width(Double)");
-		label8.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		JTextField input8 = new JTextField();
-		input8.setPreferredSize(new Dimension(200, 20));
-		input8.setMaximumSize(input8.getPreferredSize());
-		input8.setEditable(true);
-
-		gbc.gridx = 0;
-		gbc.gridy = 7;
-		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label8, gbc);
-
-		gbc.gridx = 1;
-		gbc.gridy = 7;
-		fieldPanel.add(input8, gbc);
-
-		// Panel for ninth input
-		JLabel label9 = new JLabel("Operating Hours(Double)");
-		label9.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		JTextField input9 = new JTextField();
-		input9.setPreferredSize(new Dimension(200, 20));
-		input9.setMaximumSize(input9.getPreferredSize());
-		input9.setEditable(true);
-
-		gbc.gridx = 0;
-		gbc.gridy = 8;
-		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label9, gbc);
-
-		gbc.gridx = 1;
-		gbc.gridy = 8;
-		fieldPanel.add(input9, gbc);
-
-		// Panel for tenth input
-		JLabel label10 = new JLabel("Zero Turn Radius(Boolean)");
-		label10.setFont(new Font("SansSerif", Font.PLAIN, 13));
-
-		String[] options = { "Select", "True", "False" };
-
-		JComboBox<?> input10 = new JComboBox<Object>(options);
-		input10.setSelectedIndex(0);
-		input10.setPreferredSize(new Dimension(200, 20));
-		input10.setMaximumSize(input10.getPreferredSize());
-
-		gbc.gridx = 0;
-		gbc.gridy = 9;
-		gbc.anchor = GridBagConstraints.WEST;
-		fieldPanel.add(label10, gbc);
-
-		gbc.gridx = 1;
-		gbc.gridy = 9;
-		fieldPanel.add(input10, gbc);
-
-		JButton addMower = new JButton("Add Commercial Mower");
-		gbc.gridy = 10;
-		fieldPanel.add(addMower, gbc);
-
-		// action to save commerical mower
+		// action to save commercial mower
 		addMower.addActionListener(new ActionListener() {
-
-
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CommercialMower cw = new CommercialMower();
-				Engine ce = new Engine();
-				if (input1.getText().isBlank() != true) {
-					cw.setManufacturer(input1.getText());
+				cw = new CommercialMower();
+				ce = new Engine();
+				
+				confirmation.setForeground(Color.BLACK);
+				
+				// if user types in something, set the value.
+				// assume that empty input or white space will use default values.
+				String in1Trim = input1.getText().strip();
+				if (in1Trim.isEmpty() == false) {
+					cw.setManufacturer(in1Trim);
 				}
-				if (input2.getText().isBlank() != true) {
-					try {
-						int i = Integer.parseInt(input2.getText());
-						cw.setYear(i);
-					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for year");
+				
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will use default values.
+				String in2Trim = input2.getText().strip();
+				if (in2Trim.isEmpty() == false) {
+					// if the input is not 4 characters long
+					if (in2Trim.length() != 4) {
+						confirmation.setText("Please enter a 4 digit year.");
+						confirmation.setForeground(Color.RED);
 						return;
 					}
+					// if input is 4 characters long but those characters are not numbers
+					else {
+						try {
+							int i = Integer.parseInt(in2Trim);
+							cw.setYear(i);
+						} catch (NumberFormatException nfe) {
+							confirmation.setText("Please enter a valid number for mower year.");
+							confirmation.setForeground(Color.RED);
+							return;
+						}
+					}
 				}
-				if (input3.getText().isBlank() != true) {
-					cw.setSerialNumber(input3.getText());
+
+				// if user types in something, set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in3Trim = input3.getText().strip();
+				if (in3Trim.isEmpty() == false) {
+					cw.setSerialNumber(in3Trim);
 				}
-				if (input4.getText().isBlank() != true) {
-					ce.setManufacturer(input4.getText());
+				
+				// if user types in something, set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in4Trim = input4.getText().strip();
+				if (in4Trim.isEmpty() == false) {
+					ce.setManufacturer(in4Trim);
 				}
-				if (input5.getText().isBlank() != true) {
+				
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in5Trim = input5.getText().strip();
+				if (in5Trim.isEmpty() == false) {
 					try {
-						int i = Integer.parseInt(input5.getText());
+						double i = Double.parseDouble(in5Trim);
 						ce.setHorsePower(i);
 					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for horse power");
+						confirmation.setText("Please enter a valid number for horse power.");
+						confirmation.setForeground(Color.RED);
 						return;
 					}
 				}
-				if (input6.getText().isBlank() != true) {
+				
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in6Trim = input6.getText().strip();
+				if (in6Trim.isEmpty() == false) {
 					try {
-						int i = Integer.parseInt(input6.getText());
+						int i = Integer.parseInt(in6Trim);
 						ce.setCylinders(i);
 					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for cylinders");
+						confirmation.setText("Please enter a valid whole number for cylinders.");
+						confirmation.setForeground(Color.RED);
 						return;
 					}
 				}
-				if (input7.getText().isBlank() != true) {
-					cw.setModel(input7.getText());
+				
+				// if user types in something, set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in7Trim = input7.getText().strip();
+				if (in7Trim.isEmpty() == false) {
+					cw.setModel(in7Trim);
 				}
-				if (input8.getText().isBlank() != true) {
+				
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in8Trim = input8.getText().strip();
+				if (in8Trim.isEmpty() == false) {
 					try {
-						double i = Double.parseDouble(input8.getText());
+						double i = Double.parseDouble(in8Trim);
 						cw.setDeckWidth(i);
 					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for deck width");
+						confirmation.setText("Please enter a valid number for deck width.");
+						confirmation.setForeground(Color.RED);
 						return;
 					}
 				}
-				if (input9.getText().isBlank() != true) {
+				
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
+				String in9Trim = input9.getText().strip();
+				if (in9Trim.isEmpty() == false) {
 					try {
-						double i = Double.parseDouble(input9.getText());
+						double i = Double.parseDouble(in9Trim);
 						cw.setOperatingHours(i);
 					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for operating hours");
+						confirmation.setText("Please enter a valid number for operating hours.");
+						confirmation.setForeground(Color.RED);
 						return;
 					}
 				}
+
+				// if user selects something, save it.
+				// assume that not selecting will result in use of default values.
 				String selectedItem = (String) input10.getSelectedItem();
 				if ("True".equals(selectedItem)) {
 					cw.setZeroTurnRadius(true);
 				} else if ("False".equals(selectedItem)) {
 					cw.setZeroTurnRadius(false);
 				}
+				
 				cw.setEngine(ce);
-				wareHouse.addMower(cw);
-
-				confirmation.setText("Mower Added!");
-				updateSaved = false;
+				
+				displayText.setText(cw.confirmString());
+				confirmation.setText("Please confirm your input.");
+				
+				/* Enable user to perform action after pressing add */ 
+				confirmButton.setEnabled(true);
+				cancelButton.setEnabled(true);	
 			}
 
 		});
+		
+		confirmButton.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					wareHouse.addMower(cw);
+					confirmation.setText("Mower Added!");
+					confirmation.setForeground(new Color(18, 112, 32));
+					displayText.setText("");
+					updateSaved = false;
+					
+					/*stop user from pressing button after confirmation or 
+					cancellation until they make a change or press the add button */ 
+					confirmButton.setEnabled(false);
+					cancelButton.setEnabled(false);
+
+					cw = null;
+					ce = null;
+			}
+		});
+		
+		cancelButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				confirmation.setText("Mower Addition Canceled.");
+				confirmation.setForeground(Color.BLACK);
+				displayText.setText("");
+				
+				updateSaved = true;
+				
+				/*stop user from pressing button after confirmation or 
+				cancellation until they make a change or press the add button */ 
+				confirmButton.setEnabled(false);
+				cancelButton.setEnabled(false);
+
+				cw = null;
+				ce = null;
+			}	
+		});
+		
+		// add panels to mainPanel
 		mainPanel.add(infoPanel);
-		mainPanel.add(confirmation);
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 10))); 
+		mainPanel.add(conPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 0))); 
 		mainPanel.add(fieldPanel);
-
+		
+		// Add panels to window
 		addFields.add(mainPanel);
-		addFields.pack();
+		addFields.setLocationRelativeTo(null);
 		addFields.setVisible(true);
-
 	}
+	
+	// Adding mower type Lawn Tractor to list of mowers in warehouse
 
 	// Adding mower type Lawn Tractor to list of mowers in warehouse
 	public void addLawnTractorMowerAction(JFrame parentFrame) {
@@ -1473,7 +2186,7 @@ public class WareHouseGUI {
 		// Panel for confirmation of adding mower
 		JPanel conPanel = new JPanel();
 		
-		JLabel confirmation = new JLabel("Place Holder");
+		JLabel confirmation = new JLabel("");
 		confirmation.setFont(new Font("SansSerif", Font.PLAIN, 16));
 		confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -1562,11 +2275,12 @@ public class WareHouseGUI {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		
 		// Section for first input
-		JLabel label1 = new JLabel("Mower Manufacturer:");
+		JLabel label1 = new JLabel("Mower Manufacturer (Text):");
 		label1.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input1 = new JTextField();
 		input1.setPreferredSize(new Dimension(200, 35));
 		input1.setMaximumSize(input1.getPreferredSize());
+		input1.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input1.setEditable(true);
 
 		gbc.gridx = 0;
@@ -1580,11 +2294,12 @@ public class WareHouseGUI {
 		inputPanel.add(input1, gbc);
 
 		// Section for second input
-		JLabel label2 = new JLabel("Mower Year(Number):");
+		JLabel label2 = new JLabel("Mower Year (Whole Number):");
 		label2.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input2 = new JTextField();
 		input2.setPreferredSize(new Dimension(200, 35));
 		input2.setMaximumSize(input2.getPreferredSize());
+		input2.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input2.setEditable(true);
 
 		gbc.gridx = 0;
@@ -1597,11 +2312,12 @@ public class WareHouseGUI {
 		inputPanel.add(input2, gbc);
 
 		// Section for third input
-		JLabel label3 = new JLabel("Mower Serial Number:");
+		JLabel label3 = new JLabel("Mower Serial Number (Text):");
 		label3.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input3 = new JTextField();
 		input3.setPreferredSize(new Dimension(200, 35));
 		input3.setMaximumSize(input3.getPreferredSize());
+		input3.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input3.setEditable(true);
 
 		gbc.gridx = 0;
@@ -1614,11 +2330,12 @@ public class WareHouseGUI {
 		inputPanel.add(input3, gbc);
 
 		// Section for fourth input
-		JLabel label4 = new JLabel("Engine Manufacturer:");
+		JLabel label4 = new JLabel("Engine Manufacturer (Text):");
 		label4.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input4 = new JTextField();
 		input4.setPreferredSize(new Dimension(200, 35));
 		input4.setMaximumSize(input4.getPreferredSize());
+		input4.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input4.setEditable(true);
 
 		gbc.gridx = 0;
@@ -1631,11 +2348,12 @@ public class WareHouseGUI {
 		inputPanel.add(input4, gbc);
 
 		// Section for fifth input
-		JLabel label5 = new JLabel("Engine HorsePower(Number):");
+		JLabel label5 = new JLabel("Engine Horse Power (Whole or Decimal Number):");
 		label5.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input5 = new JTextField();
 		input5.setPreferredSize(new Dimension(200, 35));
 		input5.setMaximumSize(input5.getPreferredSize());
+		input5.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input5.setEditable(true);
 
 		gbc.gridx = 0;
@@ -1648,11 +2366,12 @@ public class WareHouseGUI {
 		inputPanel.add(input5, gbc);
 
 		// Panel for sixth input
-		JLabel label6 = new JLabel("Engine Cylinders(Number):");
+		JLabel label6 = new JLabel("Engine Cylinders (Whole Number):");
 		label6.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input6 = new JTextField();
 		input6.setPreferredSize(new Dimension(200, 35));
 		input6.setMaximumSize(input6.getPreferredSize());
+		input6.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input6.setEditable(true);
 
 		gbc.gridx = 0;
@@ -1665,11 +2384,12 @@ public class WareHouseGUI {
 		inputPanel.add(input6, gbc);
 
 		// Panel for seventh input
-		JLabel label7 = new JLabel("Lawn Tractor Model");
+		JLabel label7 = new JLabel("Lawn Tractor Model (Text):");
 		label7.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input7 = new JTextField();
 		input7.setPreferredSize(new Dimension(200, 35));
 		input7.setMaximumSize(input7.getPreferredSize());
+		input7.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input7.setEditable(true);
 
 		gbc.gridx = 0;
@@ -1682,11 +2402,12 @@ public class WareHouseGUI {
 		inputPanel.add(input7, gbc);
 
 		// Panel for eighth input
-		JLabel label8 = new JLabel("Lawn Tractor Deck Width(Number)");
+		JLabel label8 = new JLabel("Lawn Tractor Deck Width (Whole or Decimal Number):");
 		label8.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		JTextField input8 = new JTextField();
 		input8.setPreferredSize(new Dimension(200, 35));
 		input8.setMaximumSize(input8.getPreferredSize());
+		input8.setFont(new Font("SansSerif",Font.PLAIN,15));
 		input8.setEditable(true);
 
 		gbc.gridx = 0;
@@ -1714,8 +2435,6 @@ public class WareHouseGUI {
 		fieldPanel.add(inputPanel);
 		fieldPanel.add(displayPanel);
 		
-		/*TODO
-		 * Fix this to line up with new layout and text area*/
 		// Action for adding to warehouse
 		addMower.addActionListener(new ActionListener() {
 
@@ -1725,15 +2444,15 @@ public class WareHouseGUI {
 				le = new Engine();
 				confirmation.setForeground(Color.BLACK);
 				
-				// if user types in something, set the value
-				// assume that empty input or white space will use default values
+				// if user types in something, set the value.
+				// assume that empty input or white space will use default values.
 				String in1Trim = input1.getText().strip();
 				if (in1Trim.isEmpty() == false) {
 					lt.setManufacturer(in1Trim);
 				}
 
-				// if user types in something, parse and set the value
-				// assume that empty input or white space will use default values
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will use default values.
 				String in2Trim = input2.getText().strip();
 				if (in2Trim.isEmpty() == false) {
 					// if the input is not 4 characters long
@@ -1755,70 +2474,64 @@ public class WareHouseGUI {
 					}
 				}
 				
-				// if user types in something,set the value
-				// assume that empty input or white space will result in the use of default
-				// values
+				// if user types in something,set the value.
+				// assume that empty input or white space will result in the use of default values.
 				String in3Trim = input3.getText().strip();
 				if (in3Trim.isEmpty() == false) {
 					lt.setSerialNumber(in3Trim);
 				}
 				
-				// if user types in something,set the value
-				// assume that empty input or white space will result in the use of default
-				// values
+				// if user types in something,set the value.
+				// assume that empty input or white space will result in the use of default values.
 				String in4Trim = input4.getText().strip();
 				if (in4Trim.isEmpty() == false) {
 					le.setManufacturer(in4Trim);
 				}
 				
-				// if user types in something, parse and set the value
-				// assume that empty input or white space will result in the use of default
-				// values
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
 				String in5Trim = input5.getText().strip();
 				if (in5Trim.isEmpty() == false) {
 					try {
 						int i = Integer.parseInt(in5Trim);
 						le.setHorsePower(i);
 					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for horse power");
+						confirmation.setText("Please enter a valid whole number for horse power.");
 						confirmation.setForeground(Color.RED);
 						return;
 					}
 				}
 				
-				// if user types in something, parse and set the value
-				// assume that empty input or white space will result in the use of default
-				// values
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default  values.
 				String in6Trim = input6.getText().strip();
 				if (in6Trim.isEmpty() == false) {
 					try {
 						int i = Integer.parseInt(in6Trim);
 						le.setCylinders(i);
 					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for cylinders");
+						confirmation.setText("Please enter a valid whole number for cylinders.");
 						confirmation.setForeground(Color.RED);
 						return;
 					}
 				}
 				
-				// if user types in something,set the value
-				// assume that empty input or white space will result in the use of default
-				// values
+				// if user types in something,set the value.
+				// assume that empty input or white space will result in the use of default values.
 				String in7Trim = input7.getText().strip();
 				if (in7Trim.isEmpty() == false) {
 					lt.setModel(in7Trim);
 				}
 				
-				// if user types in something, parse and set the value
-				// assume that empty input or white space will result in the use of default
-				// values
+				// if user types in something, parse and set the value.
+				// assume that empty input or white space will result in the use of default values.
 				String in8Trim = input8.getText().strip();
 				if (in8Trim.isEmpty() == false) {
 					try {
 						double i = Double.parseDouble(in8Trim);
 						lt.setDeckWidth(i);
 					} catch (NumberFormatException nfe) {
-						confirmation.setText("Please enter a valid number for deck width");
+						confirmation.setText("Please enter a valid number for deck width.");
 						confirmation.setForeground(Color.RED);
 						return;
 					}
@@ -1829,7 +2542,7 @@ public class WareHouseGUI {
 				displayText.setText(lt.confirmString());
 				confirmation.setText("Please confirm your input.");
 				
-				/* Enable user to perform action for after pressing add */ 
+				/* Enable user to perform action after pressing add */ 
 				confirmButton.setEnabled(true);
 				cancelButton.setEnabled(true);
 			}
@@ -1848,7 +2561,7 @@ public class WareHouseGUI {
 				updateSaved = false;
 				
 				/*stop user from pressing button after confirmation or 
-				cancellation until the make a change or press the add button */ 
+				cancellation until they make a change or press the add button */ 
 				confirmButton.setEnabled(false);
 				cancelButton.setEnabled(false);
 				
@@ -1869,7 +2582,7 @@ public class WareHouseGUI {
 				updateSaved = true;
 				
 				/*stop user from pressing button after confirmation or 
-				cancellation until the make a change or press the add button */ 
+				cancellation until they make a change or press the add button */ 
 				confirmButton.setEnabled(false);
 				cancelButton.setEnabled(false);
 				
@@ -1891,7 +2604,12 @@ public class WareHouseGUI {
 		addFields.setVisible(true);
 
 	}
-
+	
+	/*--------------------------------------------------------------------------------------------------------------------------------------------*/
+	// Save Mower Section
+	
+	// Saves user data to a .txt file
+	
 	/*-----------------------------------------------------------------------------------------------------------------------------------*/
 	// Save Mower Section
 
@@ -1950,15 +2668,7 @@ public class WareHouseGUI {
 		infoPanel.add(innerInfoPanel);
 		infoPanel.add(Box.createRigidArea(new Dimension(0,30)));
 		infoPanel.add(saveInstructions);
-		
-		/*
-		infoPanel.add(saveGreetings);
-		infoPanel.add(saveInstructions);*/
-		
-		
-		//infoPanel.add(note1);
-		//infoPanel.add(note2);
-		//infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
+
 		
 		// Confirmation Panel and its components
 		
@@ -1970,8 +2680,7 @@ public class WareHouseGUI {
 		JLabel confirmation = new JLabel();
 		confirmation.setFont(new Font("SansSerif",Font.PLAIN,14));
 		confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		
+				
 		conPanel.add(confirmation);
 		
 		
@@ -1985,8 +2694,8 @@ public class WareHouseGUI {
 		input.setMaximumSize(new Dimension(450, 40));
 		input.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		input.setFont(new Font(null,Font.PLAIN,15));
-		
 		input.setEditable(true);
+		
 		JButton saveButton = new JButton("Save");
 		saveButton.setFont(new Font("SansSerif",Font.PLAIN,16));
 		saveButton.setMaximumSize(new Dimension(70, 40));
@@ -1997,7 +2706,7 @@ public class WareHouseGUI {
 		inputPanel.add(saveButton);
 		
 		
-		// action if the file is or is not saved
+		// action to save file
 		saveButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -2011,7 +2720,7 @@ public class WareHouseGUI {
 					if (storeName == null || wareHouse.getStoreName() == null) {
 						boolean isSaved = saveNameDialog(savePage);
 						if(isSaved == false) {
-							confirmation.setText("You can not save without a warehouse name");
+							confirmation.setText("You can not save without a warehouse name.");
 							confirmation.setForeground(Color.RED);
 						}
 					}
@@ -2027,6 +2736,12 @@ public class WareHouseGUI {
 						confirmation.setForeground(new Color(18, 112, 32));
 						input.setText("");
 						updateSaved = true;
+						
+						// Exit program when exit is called and data is saved
+						if(exitCalled == true) {
+							exitCalled = false;
+							System.exit(0);
+						}
 					}
 
 				}
@@ -2053,7 +2768,7 @@ public class WareHouseGUI {
 		note1.setFont(new Font("SansSerif", Font.BOLD, 17));
 		note1.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		JLabel note2 = new JLabel("- This file has the same format as the input file.");
+		JLabel note2 = new JLabel("- This saved file has the same format as the input file.");
 		note2.setFont(new Font("SansSerif", Font.BOLD, 14));
 		note2.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
@@ -2079,7 +2794,7 @@ public class WareHouseGUI {
 			}
 
 		});
-
+		
 		mainPanel.add(infoPanel);
 		mainPanel.add(Box.createRigidArea(new Dimension(0,15)));
 		mainPanel.add(conPanel);
@@ -2092,12 +2807,14 @@ public class WareHouseGUI {
 
 	}
 	
-	// Pop-up modal to set warehouse name
+	
+	// Pop-up modal to set warehouse name when trying to save
 	boolean wareHouseNamed = false;
 	public boolean saveNameDialog(JFrame parentFrame) {
 		// pop-up for trying to save without a warehouse name
 		JDialog nameDialog = new JDialog(parentFrame,"Warehouse Name Required",true);
 		nameDialog.setSize(new Dimension(600,250));
+		nameDialog.setResizable(false);
 		
 		JPanel namePanel = new JPanel();
 		namePanel.setLayout(new BoxLayout(namePanel,BoxLayout.Y_AXIS));
@@ -2108,7 +2825,7 @@ public class WareHouseGUI {
 				new EmptyBorder(20, 20, 20, 20)
 		));
 		
-		JLabel nameWarning = new JLabel("You can not save without naming your warehouse");
+		JLabel nameWarning = new JLabel("You can not save without naming your warehouse.");
 		nameWarning.setFont(new Font("SansSerif", Font.BOLD, 17));
 		nameWarning.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -2151,7 +2868,7 @@ public class WareHouseGUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(nameInput.getText().isBlank() || nameInput.getText().isEmpty()) {
-					con.setText("Please type in a valid name");
+					con.setText("Please type in a valid name.");
 					con.setForeground(Color.RED);
 				}
 				else {
@@ -2159,6 +2876,7 @@ public class WareHouseGUI {
 					storeName = wareHouse.getStoreName();
 					greeting.setText("Welcome to " + storeName + "!");
 					wareHouseNamed = true;
+					updateSaved = false;
 					nameDialog.dispose();
 				}
 				
@@ -2180,54 +2898,71 @@ public class WareHouseGUI {
 		
 		return wareHouseNamed;
 	}
-	/*-----------------------------------------------------------------------------------------------------------------------------------*/
+	
+	/*--------------------------------------------------------------------------------------------------------------------------------------------*/
+	// Load Mower Section
+	/*--------------------------------------------------------------------------------------------------------------------------------------------*/
 	// Load Mower Section
 
 	// Allows user to load mower data from input file
-
 	public void loadWareHouseAction() {
 
 		JFrame loadFrame = new JFrame("Load WareHouse Data");
+		loadFrame.setSize(new Dimension(700, 400));
+		loadFrame.setResizable(false);
 
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-		mainPanel.setBorder(new EmptyBorder(150, 20, 20, 20));
-
-		JPanel labelPanel = new JPanel(); // Panel for information
-		JPanel conPanel = new JPanel(); // Panel for loading confirmation
-		JPanel inputPanel = new JPanel(); // Panel for file input
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel.setBorder(new EmptyBorder(90, 20, 20, 20));
 		
-
-		loadFrame.setPreferredSize(new Dimension(590, 400));
-		loadFrame.setResizable(false);
+		//IntroPanel and its components
+		JPanel introPanel = new JPanel(); // Panel for information about page
 
 		JLabel intro = new JLabel("Welcome to the Load Page!");
 		intro.setFont(new Font("SansSerif", Font.BOLD, 20));
 		intro.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JLabel instruction = new JLabel("Please select the file you wish to load: ");
-		instruction.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		JLabel instruction = new JLabel("Please select the file you wish to load. ");
+		instruction.setFont(new Font("SansSerif", Font.PLAIN, 18));
 		instruction.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JLabel note1 = new JLabel("Note: Make sure file is written as expected.");
-		note1.setFont(new Font("SansSerif", Font.BOLD, 13));
+		JLabel note1 = new JLabel("Note: Attempting to load in a file with the wrong format will cause an error.");
+		note1.setFont(new Font("SansSerif", Font.BOLD, 16));
 		note1.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		labelPanel.add(intro);
-		labelPanel.add(instruction);
-
-		labelPanel.add(note1);
-		labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.PAGE_AXIS));
+		introPanel.add(intro);
+		introPanel.add(Box.createRigidArea(new Dimension(0,15)));
+		introPanel.add(instruction);
+		introPanel.add(Box.createRigidArea(new Dimension(0,15)));
+		introPanel.add(note1);
+		introPanel.setLayout(new BoxLayout(introPanel, BoxLayout.PAGE_AXIS));
 		
-		// inputPanel components field is located
-
+		// InputPanel and its components 
+		JPanel inputPanel = new JPanel(); // Panel for file input
 		JButton loadButton = new JButton("Load");
-		JButton fileButton = new JButton("View File Format");
+		loadButton.setFont(new Font("SansSerif", Font.PLAIN, 16));
+		loadButton.setPreferredSize(new Dimension(100, 35));
+		loadButton.setMaximumSize(loadButton.getPreferredSize());
+		
+		JButton formatButton = new JButton("Format Information");
+		formatButton.setFont(new Font("SansSerif", Font.PLAIN, 16));
+		formatButton.setPreferredSize(new Dimension(170, 35));
+		formatButton.setMaximumSize(formatButton.getPreferredSize());
+		
+		inputPanel.add(loadButton);
+		inputPanel.add(Box.createRigidArea(new Dimension(15,0)));
+		inputPanel.add(formatButton);
 
 		// Where the confirmation that it was loaded will be
+		JPanel conPanel = new JPanel(); // Panel for loading confirmation
+		
 		JLabel confirmation = new JLabel("");
-
 		confirmation.setAlignmentX(Component.CENTER_ALIGNMENT);
+		confirmation.setFont(new Font("SansSerif",Font.PLAIN,16));
+		
+		
+		conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.PAGE_AXIS));
+		conPanel.add(confirmation);
 
 		// If load button is pressed, call readMowerData
 		loadButton.addActionListener(new ActionListener() {
@@ -2246,30 +2981,47 @@ public class WareHouseGUI {
 					System.out.println("You chose to open this file: " + selectedFile.getAbsolutePath());
 
 					String filepath = selectedFile.getPath();
-					try {
-						wareHouse.readMowerData(filepath);
+					wareHouse.readMowerData(filepath);
+					
+					if(wareHouse.getLoadError() == true) {
+						confirmation.setText("Error opening file.");
+						confirmation.setForeground(Color.RED);
+					}
+					else {
+						confirmation.setText(wareHouse.getOutString());
+						confirmation.setForeground(new Color(18, 112, 32));
 						storeName = wareHouse.getStoreName();
 						greeting.setText("Welcome to " + storeName + "!");
-						confirmation.setText(wareHouse.getOutString());
-						updateSaved = false;
-					}
-
-					catch (Exception ex) {
-						confirmation.setText("Error opening file.");
-						ex.printStackTrace();
+						updateSaved = true;
 					}
 				}
 
 			}
 		});
 		
-		// If user wants to see the input file format
-		fileButton.addActionListener(new ActionListener() {
+		formatButton.addActionListener(e -> fileInfoPopUp(loadFrame));
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JDialog formatWindow = new JDialog(loadFrame, "Expected File Format");
-				formatWindow.setPreferredSize(new Dimension(600,500));
+		mainPanel.add(introPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0,15)));
+		mainPanel.add(conPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0,15)));
+		mainPanel.add(inputPanel);
+		
+
+		loadFrame.add(mainPanel);
+		loadFrame.setLocationRelativeTo(null);
+		loadFrame.setVisible(true);
+
+	}
+	
+	// For user to see the input file format
+	
+	// Pop up informing the user about file formatting as well as examples
+	public void fileInfoPopUp(JFrame parentPage) {
+		
+
+				JDialog formatWindow = new JDialog(parentPage, "Expected File Format");
+				formatWindow.setSize(new Dimension(700,500));
 				formatWindow.setResizable(false);
 				
 				// Main Panel for dialog
@@ -2283,307 +3035,603 @@ public class WareHouseGUI {
 				formatExample.setAlignmentX(Component.CENTER_ALIGNMENT);
 				
 				JTextArea formatText = new JTextArea();
-
-				
 				
 				JLabel formatNote1 = new JLabel("Each Property will be on a separate line in the same order listed above.");
-				JLabel formatNote2 = new JLabel("View in.txt as an example input file.");
-				JLabel formatNote3 = new JLabel("View label.txt if you want to see what each line represents.");
+				JButton viewExampleButton = new JButton("View Example");
+				JButton labeledExampleButton = new JButton("View Labeled Example");
+				JLabel formatNote2 = new JLabel("Mower Year is saved and displayed as a 4 digit number.");
 				
-				formatNote1.setFont(new Font("Sans Serif", Font.BOLD, 14));
+				formatNote1.setFont(new Font("Sans Serif", Font.BOLD, 15));
 				formatNote1.setAlignmentX(Component.CENTER_ALIGNMENT);
 				
-				formatNote2.setFont(new Font("Sans Serif", Font.BOLD, 14));
+				viewExampleButton.setFont(new Font("Sans Serif", Font.BOLD, 15));
+				viewExampleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+				
+				labeledExampleButton.setFont(new Font("Sans Serif", Font.BOLD, 15));
+				labeledExampleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+				
+				formatNote2.setFont(new Font("Sans Serif", Font.BOLD, 15));
 				formatNote2.setAlignmentX(Component.CENTER_ALIGNMENT);
 				
-				formatNote3.setFont(new Font("Sans Serif", Font.BOLD, 14));
-				formatNote3.setAlignmentX(Component.CENTER_ALIGNMENT);
+				String fileFormat = "Store Name (Text)\n"
+						+ "Mower Class Properties:\n	"
+						+ "Mower Manufacturer (Text)\n	"
+						+ "Mower Year (Whole Number)\n	"
+						+ "Mower Serial Number(Text)\n"
+						+ "Mower Type (L, C, G, or P) followed by its properties\n"
+						+ "L (LawnTractor) Properties:\n"
+						+ "	Engine Manufacturer (Text)\n"
+						+ "	Engine Horsepower (Decimal Number)\n"
+						+ "	Engine Cylinders (Whole Number)\n"
+						+ "	LawnTractor Model (Text)\n"
+						+ "	LawnTractor Deck Width (Decimal Number)\n"
+						+ "C (Commercial Mower) Properties:\n"
+						+ "	Engine Manufacturer (Text)\n"
+						+ "	Engine Horsepower (Decimal Number)\n"
+						+ "	Engine Cylinders (Whole Number)\n"
+						+ "	LawnTractor Model (Text)\n"
+						+ "	LawnTractor Deck Width (Decimal Number)\n"
+						+ "	Commercial Mower Operating Hours (Decimal Number)\n"
+						+ "	Commercial Mower Zero Turn Radius? (true or false)\n"
+						+ "G (Gaspowered Mower) Properties:\n"
+						+ "	Walk Behind Mower Cut Width (Decimal Number)\n"
+						+ "	Walk Behind Mower Wheel Diameter (Decimal Number)\n"
+						+ "	Engine Manufacturer (Text)\n"
+						+ "	Engine Horsepower (Decimal Number)\n"
+						+ "	Engine Cylinders (Whole Number)\n"
+						+ "	Gas Powered Mower Self Propelled? (true or false)\n"
+						+ "P (Push Reel Mower) Properties:\n"
+						+ "	Walk Behind Mower Cut Width (Decimal Number)\n"
+						+ "	Walk Behind Mower Wheel Diameter (Decimal Number)\n"
+						+ "	Push Reel Mower Number of Wheels (Whole Number)";
 				
-				String fileFormat = "Store Name\nMower Class Properties:\n	MowerManufacturer, Mower Year, Mower Serial Number\n"
-						+ "Mower Subclass Type (L, C, G, P)\n"
-						+ "	L (LawnTractor) Properties: Engine Manufacturer, Engine Horsepower, Engine Cylinders, LawnTractor Model, LawnTractor Deck Width\n"
-						+ "	C (Commercial Mower) Properties: Engine Manufacturer, Engine Horsepower, Engine Cylinders, LawnTractor Model, LawnTractor Deck Width, Commercial Mower Operating Hours, Commercial Mower Zero Turn Radius\n"
-						+ "	G (Gaspowered Mower) Properties: Walk Behind Mower Cut Width, Walk Behind Mower Wheel Diameter, Engine Manufacturer, Engine Horsepower, Engine Cylinders, Gas Powered Mower Self Propelled\n"
-						+ "	P (Push Reel Mower) Properties: Walk Behind Mower Cut Width, Walk Behind Mower Wheel Diameter, Push Reel Mower Number of Wheels";
 				
+				viewExampleButton.addActionListener(e -> examplePopUp(formatWindow));
+				labeledExampleButton.addActionListener(e -> labeledExamplePopUp(formatWindow));
 				
 				formatText.setText(fileFormat);
+				formatText.setFont(new Font("Sana Serif", Font.PLAIN, 16));
 				formatText.setEditable(false);
 				formatText.setLineWrap(false);
 				formatText.setWrapStyleWord(false);
 				
 				JScrollPane formatScroll = new JScrollPane(formatText);
-				formatScroll.setPreferredSize(new Dimension(400,250));
-				formatScroll.setMaximumSize(new Dimension(400,250));
+				formatScroll.setPreferredSize(new Dimension(570,250));
+				formatScroll.setMaximumSize(new Dimension(570,250));
 				formatScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 				formatScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 				
 				filePanel.add(formatExample);
-				filePanel.add(formatScroll);
 				filePanel.add(formatNote1);
 				filePanel.add(formatNote2);
-				filePanel.add(formatNote3);
+				filePanel.add(formatScroll);
+
+				filePanel.add(viewExampleButton);
+				filePanel.add(labeledExampleButton);
+				
 				
 				
 				formatWindow.add(filePanel);
 				formatWindow.pack();
+				formatWindow.setLocationRelativeTo(null);
 				formatWindow.setVisible(true);
-				
-			}
-			
-		});
-		
-		
-		inputPanel.add(loadButton);
-		inputPanel.add(fileButton);
-		conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.PAGE_AXIS));
-		conPanel.add(confirmation);
 
-		mainPanel.add(labelPanel);
-		mainPanel.add(conPanel);
-		mainPanel.add(inputPanel);
-		
-
-		loadFrame.add(mainPanel);
-		loadFrame.pack();
-		loadFrame.setVisible(true);
 
 	}
+	
+	
 
+	// Shows user an example of input with labels
+	// Pop up showing a labeled example to the user
+	public void labeledExamplePopUp(JDialog parentWindow) {
+		JDialog labeledWindow = new JDialog(parentWindow, "Labeled Example File");
+		labeledWindow.setSize(new Dimension(400,500));
+		labeledWindow.setResizable(false);
+		
+		// Main Panel for dialog
+		JPanel filePanel = new JPanel(); // Panel to show the user the example labeled
+		filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.Y_AXIS));
+		filePanel.setBorder(new EmptyBorder(15,15,15,15));
+		
+		// Label
+		JLabel formatExample = new JLabel("Labeled Example File");
+		formatExample.setFont(new Font("Sans Serif", Font.BOLD, 16));
+		formatExample.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		JTextArea formatText = new JTextArea();
+		
+		JLabel formatNote1 = new JLabel("Each Property will be on a separate line in the same order listed above.");
+		JLabel formatNote2 = new JLabel("Each propery will have a description and space between them.");
+
+
+		
+		formatNote1.setFont(new Font("Sans Serif", Font.BOLD, 15));
+		formatNote1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		formatNote2.setFont(new Font("Sans Serif", Font.BOLD, 15));
+		formatNote2.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		
+		String exampleText = "Mower Warehouse Store Name:\n"
+				+ "Monstrous Mower Warehouse\n\n"
+				+ "Mower Manufacturer:\n"
+				+ "Briggs and Stratton\n\n"
+				+ "Mower Year:\n"
+				+ "2015\n\n"
+				+ "Mower Serial Number:\n"
+				+ "AFXH1\n\n"
+				+ "Mower Subclass:\n"
+				+ "L\n\n"
+				+ "Engine Manufacturer:\n"
+				+ "Gravely Parts\n\n"
+				+ "Engine Horse Power:\n"
+				+ "10.8\n\n"
+				+ "Engine Cylinders:\n"
+				+ "2\n\n"
+				+ "Lawn Tractor Model:\n"
+				+ "Model1\n\n"
+				+ "Lawn Tractor Deck Width:\n"
+				+ "45.5\n\n"
+				+ "Mower Manufacturer:\n"
+				+ "B&H Manufacturing\n\n"
+				+ "Mower Year:\n"
+				+ "2011\n\n"
+				+ "Mower Serial Number:\n"
+				+ "AFXH2\n\n"
+				+ "Mower Subclass:\n"
+				+ "C\n\n"
+				+ "Engine Manufacturer:\n"
+				+ "Poulan Parts\n\n"
+				+ "Engine Horse Power:\n"
+				+ "10.5\n\n"
+				+ "Engine Cylinders:\n"
+				+ "2\n\n"
+				+ "Lawn Tractor Model:\n"
+				+ "Model2\n\n"
+				+ "Lawn Tractor Deck Width:\n"
+				+ "5.8\n\n"
+				+ "Commercial Mower Operating Hours:\n"
+				+ "35.5\n\n"
+				+ "Commercial Mower Zero Turn Radius?:\n"
+				+ "false\n\n"
+				+ "Mower Manufacturer:\n"
+				+ "Bush Hog Manufaturing\n\n"
+				+ "Mower Year:\n"
+				+ "2013\n\n"
+				+ "Mower Serial Number:\n"
+				+ "AFXH3\n\n"
+				+ "Mower Subclass:\n"
+				+ "G\n\n"
+				+ "Walk Behind Mower Cut Width:\n"
+				+ "20.0\n\n"
+				+ "Walk Behind Mower Wheel Diameter:\n"
+				+ "16.0\n\n"
+				+ "Engine Manufacturer:\n"
+				+ "Homelite Parts\n\n"
+				+ "Engine Horse Power:\n"
+				+ "10.5\n\n"
+				+ "Engine Cylinders:\n"
+				+ "2\n\n"
+				+ "Gas Powered Mower selfPropelled?:\n"
+				+ "true\n\n"
+				+ "Mower Manufacturer:\n"
+				+ "Ferris Industries\n\n"
+				+ "Mower Year:\n"
+				+ "2003\n\n"
+				+ "Mower Serial Number:\n"
+				+ "AFXH4\n\n"
+				+ "Mower Subclass:\n"
+				+ "P\n\n"
+				+ "Walk Behind Mower Cut Width:\n"
+				+ "18.0\n\n"
+				+ "Walk Behind Mower Wheel Diameter:\n"
+				+ "25.1\n\n"
+				+ "Push Reel Mower Number of Wheels:\n"
+				+ "4\n\n"
+				+ "Mower Manufacturer:\n"
+				+ "Briggs and Stratton II\n\n"
+				+ "Mower Year:\n"
+				+ "2015\n\n"
+				+ "Mower Serial Number:\n"
+				+ "AFXH1vv\n\n"
+				+ "Mower Subclass:\n"
+				+ "L\n\n"
+				+ "Engine Manufacturer:\n"
+				+ "Gravely Parts\n\n"
+				+ "Engine Horse Power:\n"
+				+ "13.3\n\n"
+				+ "Engine Cylinders:\n"
+				+ "2\n\n"
+				+ "Lawn Tractor Model:\n"
+				+ "Model1\n\n"
+				+ "Lawn Tractor Deck Width:\n"
+				+ "45.5";
+		
+		
+
+		
+		formatText.setText(exampleText);
+		formatText.setFont(new Font("Sana Serif", Font.PLAIN, 16));
+		formatText.setEditable(false);
+		formatText.setLineWrap(false);
+		formatText.setWrapStyleWord(false);
+		
+		JScrollPane formatScroll = new JScrollPane(formatText);
+		formatScroll.setPreferredSize(new Dimension(350,250));
+		formatScroll.setMaximumSize(new Dimension(350,250));
+		formatScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		
+		filePanel.add(formatExample);
+		filePanel.add(formatNote1);
+		filePanel.add(formatNote2);
+		filePanel.add(formatScroll);
+		
+		
+		
+		labeledWindow.add(filePanel);
+		labeledWindow.pack();
+		labeledWindow.setLocationRelativeTo(null);
+		labeledWindow.setVisible(true);
+		
+	}
+	
+	
+	// Shows user an example file
+	//Pop up showing a example to the user
+	public void examplePopUp(JDialog parentWindow) {
+		JDialog exampleWindow = new JDialog(parentWindow, "Example File");
+		exampleWindow.setSize(new Dimension(400,500));
+		exampleWindow.setResizable(false);
+		
+		// Main Panel for dialog
+		JPanel filePanel = new JPanel(); // Panel to show the user the example
+		filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.Y_AXIS));
+		filePanel.setBorder(new EmptyBorder(15,15,15,15));
+		
+		// Label
+		JLabel formatExample = new JLabel("Example File");
+		formatExample.setFont(new Font("Sans Serif", Font.BOLD, 16));
+		formatExample.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		JTextArea formatText = new JTextArea();
+		
+		JLabel formatNote1 = new JLabel("Each Property will be on a separate line in the same order listed above.");
+
+		
+		formatNote1.setFont(new Font("Sans Serif", Font.BOLD, 15));
+		formatNote1.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		
+		String exampleText = "Monstrous Mower Warehouse\n"
+				+ "Briggs and Stratton\n"
+				+ "2015\n"
+				+ "AFXH1\n"
+				+ "L\n"
+				+ "Gravely Parts\n"
+				+ "10.8\n"
+				+ "2\n"
+				+ "Model1\n"
+				+ "45.5\n"
+				+ "B&H Manufacturing\n"
+				+ "2011\n"
+				+ "AFXH2\n"
+				+ "C\n"
+				+ "Poulan Parts\n"
+				+ "10.5\n"
+				+ "2\n"
+				+ "Model2\n"
+				+ "5.8\n"
+				+ "35.5\n"
+				+ "false\n"
+				+ "Bush Hog Manufaturing\n"
+				+ "2013\n"
+				+ "AFXH3\n"
+				+ "G\n"
+				+ "20.0\n"
+				+ "16.0\n"
+				+ "Homelite Parts\n"
+				+ "10.5\n"
+				+ "2\n"
+				+ "true\n"
+				+ "Ferris Industries\n"
+				+ "2003\n"
+				+ "AFXH4\n"
+				+ "P\n"
+				+ "18.0\n"
+				+ "25.1\n"
+				+ "4\n"
+				+ "Briggs and Stratton II\n"
+				+ "2015\n"
+				+ "AFXH1vv\n"
+				+ "L\n"
+				+ "Gravely Parts\n"
+				+ "13.3\n"
+				+ "2\n"
+				+ "Model1\n"
+				+ "45.5";
+		
+		
+
+		
+		formatText.setText(exampleText);
+		formatText.setFont(new Font("Sana Serif", Font.PLAIN, 16));
+		formatText.setEditable(false);
+		formatText.setLineWrap(false);
+		formatText.setWrapStyleWord(false);
+		
+		JScrollPane formatScroll = new JScrollPane(formatText);
+		formatScroll.setPreferredSize(new Dimension(350,250));
+		formatScroll.setMaximumSize(new Dimension(350,250));
+		formatScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		
+		filePanel.add(formatExample);
+		filePanel.add(formatNote1);
+		filePanel.add(formatScroll);
+		
+		
+		
+		exampleWindow.add(filePanel);
+		exampleWindow.pack();
+		exampleWindow.setLocationRelativeTo(null);
+		exampleWindow.setVisible(true);
+	}
+	
+	
 	/*-----------------------------------------------------------------------------------------------------------------------------------*/
+	// View Mowers Section
+	
+	// Start page to view different mower types 
+
+	/*--------------------------------------------------------------------------------------------------------------------------------------------*/
 	// View Mower Section
 
 	// Allows user to view mowers in the warehouse
-	public void viewWareHouseAction() {
-		// if the ware house is empty, state that it is empty
-		// otherwise call MowerWareHouse toString and display it.
-		// do not allow to edit this text field
-		// allow to scroll
-
-		viewFrame = new JFrame("View WareHouse Data");
-		viewFrame.setPreferredSize(new Dimension(700, 440));
-		viewFrame.setResizable(false);
+	public void viewWareHouseAction() {		
+		JFrame viewPage = new JFrame("View Warehouse Data");
+		viewPage.setSize(new Dimension(900, 400));
+		viewPage.setResizable(false);
 
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-		mainPanel.setBorder(new EmptyBorder(150, 20, 20, 20));
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel.setBorder(new EmptyBorder(100, 20, 20, 20));
 
-		// Panel for panel information
+		// Panel for page information
 		JPanel infoPanel = new JPanel();
 
 		// infoPanel components
 		JLabel greetings = new JLabel("Welcome to the View Page!");
-		greetings.setFont(new Font("SansSerif", Font.BOLD, 20));
+		greetings.setFont(new Font("SansSerif", Font.BOLD, 26));
 		greetings.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JLabel instructions = new JLabel("Please select the type of mower list you would like to view:");
-		instructions.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		JLabel instructions = new JLabel("Select the type of mower list you would like to view:");
+		instructions.setFont(new Font("SansSerif", Font.PLAIN, 16));
 		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		infoPanel.add(greetings);
+		infoPanel.add(Box.createRigidArea(new Dimension(0,30)));
 		infoPanel.add(instructions);
 
-		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 
 		// Panel for displaying different mower buttons
 		JPanel mowersPanel = new JPanel();
-
-		JButton lawnTractorMower = new JButton("LawnTractor Mower");
+		
+		
+		JButton lawnTractorMower = new JButton("Lawn Tractor Mower");
+		lawnTractorMower.setFont(new Font("SansSerif",Font.PLAIN,15));
 		JButton commercialMower = new JButton("Commercial Mower");
-		JButton gasPoweredMower = new JButton("GasPowered Mower");
-		JButton pushReelMower = new JButton("PushReel Mower");
+		commercialMower.setFont(new Font("SansSerif",Font.PLAIN,15));
+		JButton gasPoweredMower = new JButton("Gas Powered Mower");
+		gasPoweredMower.setFont(new Font("SansSerif",Font.PLAIN,15));
+		JButton pushReelMower = new JButton("Push Reel Mower");
+		pushReelMower.setFont(new Font("SansSerif",Font.PLAIN,15));
 
-		// Add action listeners
-		lawnTractorMower.addActionListener(e -> viewLawnTractor());
-		commercialMower.addActionListener(e -> viewCommercialMower());
-		gasPoweredMower.addActionListener(e -> viewGasPoweredMower());
-		pushReelMower.addActionListener(e -> viewPushReelMower());
+		// Add action listeners		
+		lawnTractorMower.addActionListener(e -> viewLawnTractor(viewPage));
+		commercialMower.addActionListener(e -> viewCommercialMower(viewPage));
+		gasPoweredMower.addActionListener(e -> viewGasPoweredMower(viewPage));
+		pushReelMower.addActionListener(e -> viewPushReelMower(viewPage));
 
 		mowersPanel.add(lawnTractorMower);
+		mowersPanel.add(Box.createRigidArea(new Dimension(15,0)));
 		mowersPanel.add(commercialMower);
+		mowersPanel.add(Box.createRigidArea(new Dimension(15,0)));
 		mowersPanel.add(gasPoweredMower);
+		mowersPanel.add(Box.createRigidArea(new Dimension(15,0)));
 		mowersPanel.add(pushReelMower);
+		
+		mowersPanel.setLayout(new BoxLayout(mowersPanel,BoxLayout.X_AXIS));
 
 		mainPanel.add(infoPanel);
+		mainPanel.add(Box.createRigidArea(new Dimension(0,30)));
 		mainPanel.add(mowersPanel);
 
-		viewFrame.add(mainPanel);
-		viewFrame.pack();
-		viewFrame.setVisible(true);
+		viewPage.add(mainPanel);
+		viewPage.setLocationRelativeTo(null);
+		viewPage.setVisible(true);
 	}
+	
+	// Shows user the list of Push Reel mowers
 
 	// View properties of all Push Reel mowers
-	public void viewPushReelMower() {
-		JDialog pushWindow = new JDialog(viewFrame, "View Push Reel Mowers");
-		pushWindow.setPreferredSize(new Dimension(490, 300));
+	public void viewPushReelMower(JFrame parentFrame) {
+		JDialog pushWindow = new JDialog(parentFrame, "View Push Reel Mowers");
+		pushWindow.setSize(new Dimension(490, 300));
 		pushWindow.setResizable(false);
 
-		JPanel mainPanel = new JPanel();
-		mainPanel.setSize(new Dimension(400, 120));
+		JPanel mainPanel = new JPanel(new BorderLayout());
+		mainPanel.setBorder(new EmptyBorder(25, 25, 25, 25));
 
 		DefaultListModel<String> prMowers = new DefaultListModel<String>();
 
-		boolean found = false;
+		boolean mowersFound = false;
 
 		for (Mower m : wareHouse.getMowersList()) {
 			if (m instanceof PushReelMower) {
-				found = true;
+				mowersFound = true;
 
-				// split toString to print all properties stacked on top
-				String[] lines = m.toString().split("\n");
-				for (String line : lines) {
-					prMowers.addElement(line);
-				}
-				prMowers.addElement("------------------------------------");
+				// split to print all properties stacked on top
+
+				PushReelMower pm = (PushReelMower) m;
+				
+				prMowers.addElement(pm.listDisplayString());
+				prMowers.addElement("-----------------------------------------");
 			}
 		}
 
-		if (found == false) {
+		if (mowersFound == false) {
 			prMowers.addElement("No Push Reel Mowers in warehouse.");
 
 		}
 		JList<String> pList = new JList<String>(prMowers);
-		pList.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		pList.setFont(new Font("SansSerif", Font.PLAIN, 17));
 		JScrollPane scrollPane = new JScrollPane(pList);
 
-		mainPanel.add(scrollPane);
+		mainPanel.add(scrollPane,BorderLayout.CENTER);
 
 		pushWindow.add(mainPanel);
-		pushWindow.pack();
+		pushWindow.setLocationRelativeTo(null);
 		pushWindow.setVisible(true);
 
 	}
+	
+	// Shows user the list of Gas Powered mowers
 
 	// View properties of all Gas Powered mowers
-	public void viewGasPoweredMower() {
+	public void viewGasPoweredMower(JFrame parentFrame) {
 
-		JDialog gasWindow = new JDialog(viewFrame, "View Gas Powered Mowers");
-		gasWindow.setPreferredSize(new Dimension(490, 300));
+		JDialog gasWindow = new JDialog(parentFrame, "View Gas Powered Mowers");
+		gasWindow.setSize(new Dimension(490, 300));
 		gasWindow.setResizable(false);
 
-		boolean found = false;
+		boolean mowersFound = false;
 
-		JPanel mainPanel = new JPanel();
-		mainPanel.setSize(new Dimension(400, 120));
+		JPanel mainPanel = new JPanel(new BorderLayout());
+		mainPanel.setBorder(new EmptyBorder(25, 25, 25, 25));
 
 		DefaultListModel<String> gpMowers = new DefaultListModel<String>();
 
 		for (Mower m : wareHouse.getMowersList()) {
 			if (m instanceof GasPoweredMower) {
-				found = true;
+				mowersFound = true;
 
 				// split toString to print all properties stacked on top
-				String[] lines = m.toString().split("\n");
-				for (String line : lines) {
-					gpMowers.addElement(line);
-				}
-				gpMowers.addElement("------------------------------------");
+				GasPoweredMower gm = (GasPoweredMower)m;
+				gpMowers.addElement(gm.listDisplayString());
+				
+				gpMowers.addElement("-----------------------------------------");
 			}
 		}
 
-		if (found == false) {
+		if (mowersFound == false) {
 			gpMowers.addElement("No Gas Powered Mowers in warehouse.");
 
 		}
 
 		JList<String> gList = new JList<String>(gpMowers);
-		gList.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		gList.setFont(new Font("SansSerif", Font.PLAIN, 17));
 		JScrollPane scrollPane = new JScrollPane(gList);
 
-		mainPanel.add(scrollPane);
+		mainPanel.add(scrollPane,BorderLayout.CENTER);
 
 		gasWindow.add(mainPanel);
-		gasWindow.pack();
+		gasWindow.setLocationRelativeTo(null);
 		gasWindow.setVisible(true);
 
 	}
-
+	
+	// Shows user the list of Commercial mowers
 	// View properties of all Commercial Mowers
-	public void viewCommercialMower() {
+	public void viewCommercialMower(JFrame parentFrame) {
 
-		JDialog comWindow = new JDialog(viewFrame, "View Commercial Mowers");
-		comWindow.setPreferredSize(new Dimension(490, 300));
+		JDialog comWindow = new JDialog(parentFrame, "View Commercial Mowers");
+		comWindow.setSize(new Dimension(490, 300));
 		comWindow.setResizable(false);
 
-		boolean found = false;
+		boolean mowersFound = false;
 
-		JPanel mainPanel = new JPanel();
-		mainPanel.setSize(new Dimension(400, 120));
+		JPanel mainPanel = new JPanel(new BorderLayout());
+		mainPanel.setBorder(new EmptyBorder(25, 25, 25, 25));
 
 		DefaultListModel<String> cmMowers = new DefaultListModel<String>();
 
 		for (Mower m : wareHouse.getMowersList()) {
 			if (m instanceof CommercialMower) {
-				found = true;
+				mowersFound = true;
 
 				// split toString to print all properties stacked on top
-				String[] lines = m.toString().split("\n");
-				for (String line : lines) {
-					cmMowers.addElement(line);
-				}
-				cmMowers.addElement("------------------------------------");
+				CommercialMower cm = (CommercialMower)m;
+				
+				cmMowers.addElement(cm.listDisplayString());
+				cmMowers.addElement("-----------------------------------------");
 			}
 		}
 
-		if (found == false) {
+		if (mowersFound == false) {
 			cmMowers.addElement("No Commercial Mowers in warehouse.");
 
 		}
 
 		JList<String> cList = new JList<String>(cmMowers);
-		cList.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		cList.setFont(new Font("SansSerif", Font.PLAIN, 17));
 		JScrollPane scrollPane = new JScrollPane(cList);
 
-		mainPanel.add(scrollPane);
+		mainPanel.add(scrollPane,BorderLayout.CENTER);
 
 		comWindow.add(mainPanel);
-		comWindow.pack();
+		comWindow.setLocationRelativeTo(null);
 		comWindow.setVisible(true);
 
 	}
+	
+	// Shows user the list of Lawn Tractor mowers
 
 	// View properties of all Lawn Tractor mowers
-	public void viewLawnTractor() {
+	public void viewLawnTractor(JFrame parentFrame) {
 
-		JDialog lawnWindow = new JDialog(viewFrame, "View Lawn Tractor Mowers");
-		lawnWindow.setPreferredSize(new Dimension(490, 300));
+		JDialog lawnWindow = new JDialog(parentFrame, "View Lawn Tractor Mowers");
+		lawnWindow.setSize(new Dimension(490, 300));
 		lawnWindow.setResizable(false);
 
-		boolean found = false;
+		boolean mowersFound = false;
 
-		JPanel mainPanel = new JPanel();
-		mainPanel.setSize(new Dimension(400, 120));
+		JPanel mainPanel = new JPanel(new BorderLayout());
+		
+		mainPanel.setBorder(new EmptyBorder(25, 25, 25, 25));
 
 		DefaultListModel<String> ltMowers = new DefaultListModel<String>();
 
 		for (Mower m : wareHouse.getMowersList()) {
 			if ((m instanceof LawnTractor) && !(m instanceof CommercialMower)) {
-				found = true;
+				mowersFound = true;
 
-				// split toString to print all properties stacked on top
-				String[] lines = m.toString().split("\n");
-				for (String line : lines) {
-					ltMowers.addElement(line);
-				}
-				ltMowers.addElement("------------------------------------");
+				// split to print all properties stacked on top
+				LawnTractor lm = (LawnTractor) m;
+
+				ltMowers.addElement(lm.listDisplayString());
+				ltMowers.addElement("-----------------------------------------");
 			}
 		}
 
-		if (found == false) {
+		if (mowersFound == false) {
 			ltMowers.addElement("No Lawn Tractor Mowers in warehouse.");
 
 		}
 
 		JList<String> lList = new JList<String>(ltMowers);
-		lList.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		lList.setFont(new Font("SansSerif", Font.PLAIN, 17));
 		JScrollPane scrollPane = new JScrollPane(lList);
-
-		mainPanel.add(scrollPane);
+		
+		
+		mainPanel.add(scrollPane,BorderLayout.CENTER);
 
 		lawnWindow.add(mainPanel);
-		lawnWindow.pack();
+		lawnWindow.setLocationRelativeTo(null);
 		lawnWindow.setVisible(true);
 	}
+	
 
 	/*-----------------------------------------------------------------------------------------------------------------------------------*/
 	// Exit Program Section
@@ -2591,14 +3639,17 @@ public class WareHouseGUI {
 	 * TODO Change to ask if the user would like to save the update or not 
 	 * Cases: 
 	 * - when you add a mower 
-	 * - when you load in ware house data 
+	 * - when you load in data 
+	 * - when you change the warehouse name
 	 * - when you do not update anything and just want to exit
+	 * - when you delete a mower
 	 */
+	
 
 	// Exit out of application
 	public void exitWareHouseAction() {
 
-		// if no updates were made just exit
+		// if no updates were made, just exit
 		if (updateSaved == true) {
 			System.exit(0);
 		}
@@ -2632,15 +3683,21 @@ public class WareHouseGUI {
 		exitWindow.add(mainPanel);
 
 		// If there were unsaved changes, ask the user what action to take
-		
+		// After saving, exit the program
+		// Current Problem: the program is exiting before saving
 		yesButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				exitCalled = true;
 				saveWareHouseAction();
-				
+				exitWindow.dispose();
+
 
 			}
+
 		});
+		
+
 
 		// call to exit program if user says no
 		noButton.addActionListener(new ActionListener() {
